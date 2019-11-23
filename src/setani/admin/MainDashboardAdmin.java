@@ -45,6 +45,8 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             }
         }
     }
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,7 +136,6 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         panCardTransaksi = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
-        jButton8 = new javax.swing.JButton();
         jScrollPane8 = new javax.swing.JScrollPane();
         jTable8 = new javax.swing.JTable();
         panCardAkun = new javax.swing.JPanel();
@@ -541,9 +542,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(tfCari))
                 .addContainerGap())
         );
 
@@ -583,7 +584,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(187, 187, 187));
         jPanel3.setOpaque(false);
-        jPanel3.setLayout(new java.awt.FlowLayout(1, 15, 3));
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 3));
 
         jPanel5.setPreferredSize(new java.awt.Dimension(180, 100));
 
@@ -896,7 +897,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jButton7.setBackground(new java.awt.Color(1, 87, 155));
         jButton7.setForeground(new java.awt.Color(246, 246, 246));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
-        jButton7.setText("Tambah Data");
+        jButton7.setText("Tambah Hasil Panen");
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -956,11 +957,6 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel23.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel23.setText("Transaksi");
 
-        jButton8.setBackground(new java.awt.Color(1, 87, 155));
-        jButton8.setForeground(new java.awt.Color(246, 246, 246));
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
-        jButton8.setText("Tambah Data");
-
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -968,17 +964,13 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel23)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton8)
-                .addGap(30, 30, 30))
+                .addContainerGap(710, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel23)
-                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel23)
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -1022,7 +1014,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jButton9.setBackground(new java.awt.Color(1, 87, 155));
         jButton9.setForeground(new java.awt.Color(246, 246, 246));
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
-        jButton9.setText("Tambah Data");
+        jButton9.setText("Tambah Akun");
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -1291,7 +1283,10 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainDashboardAdmin().setVisible(true);
+//                new MainDashboardAdmin().setVisible(true);
+                MainDashboardAdmin mainDashboardAdmin = new MainDashboardAdmin();
+                mainDashboardAdmin.setLocationRelativeTo(null);
+                mainDashboardAdmin.setVisible(true);
             }
         });
     }
@@ -1300,7 +1295,6 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
