@@ -584,7 +584,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(187, 187, 187));
         jPanel3.setOpaque(false);
-        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 3));
+        jPanel3.setLayout(new java.awt.FlowLayout(1, 15, 3));
 
         jPanel5.setPreferredSize(new java.awt.Dimension(180, 100));
 
