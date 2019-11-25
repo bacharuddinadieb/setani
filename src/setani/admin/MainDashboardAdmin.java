@@ -44,9 +44,17 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 sideButtonIndikator[i].setOpaque(false);
             }
         }
-    }
+        
+        if (jPanel.equals(sideButtonElem[0])) {
+            lblIconCariAtas.setVisible(false);
+            tfCari.setVisible(false);
+        }else{
+            lblIconCariAtas.setVisible(true);
+            tfCari.setVisible(true);
+        }
+    }  
     
-    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -88,7 +96,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         tfCari = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        lblIconCariAtas = new javax.swing.JLabel();
         panCard = new javax.swing.JPanel();
         panCardBeranda = new javax.swing.JPanel();
         jPanel8 = new javax.swing.JPanel();
@@ -141,7 +149,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         panCardAkun = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
-        jButton9 = new javax.swing.JButton();
+        btnTambahAkun = new javax.swing.JButton();
         jScrollPane9 = new javax.swing.JScrollPane();
         jTable9 = new javax.swing.JTable();
         panCardCetakLaporan = new javax.swing.JPanel();
@@ -524,8 +532,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         );
 
         jPanel2.setBackground(new java.awt.Color(48, 63, 159));
+        jPanel2.setMinimumSize(new java.awt.Dimension(290, 42));
 
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_search_20px.png"))); // NOI18N
+        lblIconCariAtas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_search_20px.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -535,15 +544,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addGap(30, 30, 30))
+                .addComponent(lblIconCariAtas)
+                .addGap(35, 35, 35))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblIconCariAtas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tfCari))
                 .addContainerGap())
         );
@@ -551,9 +560,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         panCard.setBackground(new java.awt.Color(254, 254, 254));
         panCard.setLayout(new java.awt.CardLayout());
 
-        panCardBeranda.setBackground(new java.awt.Color(254, 254, 254));
+        panCardBeranda.setBackground(new java.awt.Color(249, 249, 249));
 
-        jPanel8.setBackground(new java.awt.Color(254, 254, 254));
+        jPanel8.setBackground(new java.awt.Color(249, 249, 249));
 
         jLabel21.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel21.setText("Beranda");
@@ -590,6 +599,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/hasil_panenx48.png"))); // NOI18N
 
+        jLabel28.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel28.setText("1300 Kg");
 
         jLabel29.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
@@ -611,16 +621,12 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel29)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel28)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE))
-                    .addComponent(jLabel30, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(13, 13, 13))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel28)
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addComponent(jLabel30, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel3.add(jPanel5);
@@ -632,6 +638,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jLabel32.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/transaksi_masukx48.png"))); // NOI18N
 
+        jLabel33.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel33.setText("27 Transaksi");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -650,16 +657,12 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel31)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel33)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE))
-                    .addComponent(jLabel32, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(13, 13, 13))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel31)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel33)
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addComponent(jLabel32, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel3.add(jPanel6);
@@ -671,6 +674,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel35.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
         jLabel35.setText("Transaksi Jual");
 
+        jLabel36.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel36.setText("30 Transaksi");
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
@@ -689,16 +693,12 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel35)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel36)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE))
-                    .addComponent(jLabel34, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(13, 13, 13))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel35)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel36)
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addComponent(jLabel34, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel3.add(jPanel7);
@@ -707,6 +707,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jLabel37.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/userx48.png"))); // NOI18N
 
+        jLabel39.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel39.setText("75 Orang");
 
         jLabel38.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
@@ -728,16 +729,12 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel15Layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jLabel38)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel39)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE))
-                    .addComponent(jLabel37, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(13, 13, 13))
+                .addGap(26, 26, 26)
+                .addComponent(jLabel38)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel39)
+                .addContainerGap(25, Short.MAX_VALUE))
+            .addComponent(jLabel37, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel3.add(jPanel15);
@@ -750,6 +747,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel19.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
         jLabel19.setText("Hasil Panen");
 
+        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel20.setText("Fulan bin Fulan, ada hasil panen baru berupa JAGUNG dengan Berat 100Kg");
 
         jLabel27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/hasil_panenx40.png"))); // NOI18N
@@ -786,6 +784,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel41.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
         jLabel41.setText("Transaksi");
 
+        jLabel42.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel42.setText("Fulan bin Fulan, ada pembeli baru memborong jJAGUNG 1 TON");
 
         jLabel43.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/transaksix40.png"))); // NOI18N
@@ -822,6 +821,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel45.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
         jLabel45.setText("Pengguna");
 
+        jLabel46.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel46.setText("Fulan bin Fulan, ada pembeli baru daftar yes!");
 
         jLabel47.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/userx40.png"))); // NOI18N
@@ -869,7 +869,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                             .addComponent(jPanel17, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(27, 27, 27))))
         );
         panCardBerandaLayout.setVerticalGroup(
@@ -886,10 +886,14 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel17, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panCard.add(panCardBeranda, "panCardBeranda");
+
+        panCardHasilPanen.setBackground(new java.awt.Color(249, 249, 249));
+
+        jPanel9.setBackground(new java.awt.Color(249, 249, 249));
 
         jLabel22.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel22.setText("Hasil Panen");
@@ -946,7 +950,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardHasilPanenLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
         panCardHasilPanenLayout.setVerticalGroup(
@@ -954,11 +958,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardHasilPanenLayout.createSequentialGroup()
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
         panCard.add(panCardHasilPanen, "panCardHasilPanen");
+
+        panCardTransaksi.setBackground(new java.awt.Color(249, 249, 249));
+
+        jPanel10.setBackground(new java.awt.Color(249, 249, 249));
 
         jLabel23.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel23.setText("Transaksi");
@@ -970,7 +978,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel23)
-                .addContainerGap(710, Short.MAX_VALUE))
+                .addContainerGap(718, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1000,7 +1008,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardTransaksiLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
         panCardTransaksiLayout.setVerticalGroup(
@@ -1008,19 +1016,28 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardTransaksiLayout.createSequentialGroup()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
         panCard.add(panCardTransaksi, "panCardTransaksi");
 
+        panCardAkun.setBackground(new java.awt.Color(249, 249, 249));
+
+        jPanel11.setBackground(new java.awt.Color(249, 249, 249));
+
         jLabel24.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel24.setText("Akun");
 
-        jButton9.setBackground(new java.awt.Color(1, 87, 155));
-        jButton9.setForeground(new java.awt.Color(246, 246, 246));
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
-        jButton9.setText("Tambah Akun");
+        btnTambahAkun.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahAkun.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahAkun.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahAkun.setText("Tambah Akun");
+        btnTambahAkun.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahAkunActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
@@ -1030,7 +1047,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel24)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton9)
+                .addComponent(btnTambahAkun)
                 .addGap(30, 30, 30))
         );
         jPanel11Layout.setVerticalGroup(
@@ -1039,7 +1056,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel24)
-                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnTambahAkun, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -1063,7 +1080,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardAkunLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
         panCardAkunLayout.setVerticalGroup(
@@ -1071,11 +1088,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardAkunLayout.createSequentialGroup()
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
         panCard.add(panCardAkun, "panCardAkun");
+
+        panCardCetakLaporan.setBackground(new java.awt.Color(249, 249, 249));
+
+        jPanel13.setBackground(new java.awt.Color(249, 249, 249));
 
         jLabel25.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel25.setText("Cetak Laporan");
@@ -1126,7 +1147,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardCetakLaporanLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
         panCardCetakLaporanLayout.setVerticalGroup(
@@ -1134,11 +1155,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardCetakLaporanLayout.createSequentialGroup()
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
         panCard.add(panCardCetakLaporan, "panCardCetakLaporan");
+
+        panCardPengaturan.setBackground(new java.awt.Color(249, 249, 249));
+
+        jPanel14.setBackground(new java.awt.Color(249, 249, 249));
 
         jLabel26.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel26.setText("Pengaturan");
@@ -1189,7 +1214,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardPengaturanLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
         panCardPengaturanLayout.setVerticalGroup(
@@ -1197,7 +1222,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardPengaturanLayout.createSequentialGroup()
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
@@ -1266,6 +1291,13 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jFrameHasilPanen.setVisible(true);
     }//GEN-LAST:event_btnTambahHasilPanenActionPerformed
 
+    private void btnTambahAkunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahAkunActionPerformed
+        // TODO add your handling code here:
+        JFrameAkun jFrameAkun = new JFrameAkun();
+        jFrameAkun.setLocationRelativeTo(null);
+        jFrameAkun.setVisible(true);
+    }//GEN-LAST:event_btnTambahAkunActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1305,10 +1337,10 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnTambahAkun;
     private javax.swing.JButton btnTambahHasilPanen;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1320,7 +1352,6 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -1383,6 +1414,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JTable jTable7;
     private javax.swing.JTable jTable8;
     private javax.swing.JTable jTable9;
+    private javax.swing.JLabel lblIconCariAtas;
     private javax.swing.JPanel panCard;
     private javax.swing.JPanel panCardAkun;
     private javax.swing.JPanel panCardBeranda;
