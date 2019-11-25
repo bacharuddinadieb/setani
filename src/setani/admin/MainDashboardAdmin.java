@@ -130,7 +130,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         panCardHasilPanen = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
-        jButton7 = new javax.swing.JButton();
+        btnTambahHasilPanen = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jTable7 = new javax.swing.JTable();
         panCardTransaksi = new javax.swing.JPanel();
@@ -543,7 +543,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(tfCari))
                 .addContainerGap())
         );
@@ -584,7 +584,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(187, 187, 187));
         jPanel3.setOpaque(false);
-        jPanel3.setLayout(new java.awt.FlowLayout(1, 15, 3));
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 3));
 
         jPanel5.setPreferredSize(new java.awt.Dimension(180, 100));
 
@@ -894,10 +894,16 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel22.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
         jLabel22.setText("Hasil Panen");
 
-        jButton7.setBackground(new java.awt.Color(1, 87, 155));
-        jButton7.setForeground(new java.awt.Color(246, 246, 246));
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
-        jButton7.setText("Tambah Hasil Panen");
+        btnTambahHasilPanen.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen.setText("Tambah Hasil Panen");
+        btnTambahHasilPanen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanenActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -907,7 +913,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel22)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton7)
+                .addComponent(btnTambahHasilPanen)
                 .addGap(30, 30, 30))
         );
         jPanel9Layout.setVerticalGroup(
@@ -916,7 +922,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addGap(21, 21, 21)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel22)
-                    .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
@@ -1253,6 +1259,13 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         cardLayout.show(panCard, "panCardBeranda");
     }//GEN-LAST:event_sideBtnBerandaMouseClicked
 
+    private void btnTambahHasilPanenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanenActionPerformed
+        // TODO add your handling code here:
+        JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen();
+        jFrameHasilPanen.setLocationRelativeTo(null);
+        jFrameHasilPanen.setVisible(true);
+    }//GEN-LAST:event_btnTambahHasilPanenActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1292,9 +1305,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnTambahHasilPanen;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
