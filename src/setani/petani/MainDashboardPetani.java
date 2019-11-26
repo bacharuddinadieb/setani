@@ -213,7 +213,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
         jPanel10 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTable8 = new javax.swing.JTable();
+        jTableTransaksi = new javax.swing.JTable();
         panCardPengaturan = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel26 = new javax.swing.JLabel();
@@ -944,7 +944,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        jTable8.setModel(new javax.swing.table.DefaultTableModel(
+        jTableTransaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -955,7 +955,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane8.setViewportView(jTable8);
+        jScrollPane8.setViewportView(jTableTransaksi);
 
         javax.swing.GroupLayout panCardTransaksiLayout = new javax.swing.GroupLayout(panCardTransaksi);
         panCardTransaksi.setLayout(panCardTransaksiLayout);
@@ -1200,7 +1200,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTable jTable11;
-    private javax.swing.JTable jTable8;
+    private javax.swing.JTable jTableTransaksi;
     private javax.swing.JTable jtHasilPanen;
     private javax.swing.JLabel lblIconCariAtas;
     private javax.swing.JPanel panCard;

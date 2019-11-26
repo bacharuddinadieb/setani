@@ -261,7 +261,7 @@ public class Login1 extends javax.swing.JFrame {
                         this.dispose();
                         break;
                     case 2:
-                        new setani.pembeli.MainDashboardPembeli().setVisible(true);
+                        new setani.pembeli.MainDashboardPembeli(il).setVisible(true);
                         this.dispose();
                         break;
                     case 3:
