@@ -5,10 +5,16 @@
  */
 package setani.admin;
 
+import com.mysql.jdbc.Connection;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
 
 /**
@@ -22,13 +28,62 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
      */
     private final CardLayout cardLayout;
     private ArrayList<Akun> arrAkun = new ArrayList<>();
-    private koneksi koneksi;
+    private Connection conn;
+    private DefaultTableModel modelAkun = new DefaultTableModel();
     
     public MainDashboardAdmin() {
         initComponents();
         lblIconCariAtas.setVisible(false);
         tfCari.setVisible(false);
         cardLayout = (CardLayout)(panCard.getLayout());
+        
+        conn = koneksi.bukaKoneksi();
+    }
+    
+    private void loadKolomAkun() {
+        modelAkun.addColumn("No");
+        modelAkun.addColumn("Username");
+        modelAkun.addColumn("Nama");
+        modelAkun.addColumn("Nomer Telepon");
+        modelAkun.addColumn("Tipe Akun");
+        modelAkun.addColumn("Status");
+    }
+    
+    public void loadDataAkun(){
+         if (conn != null) {
+            arrAkun = new ArrayList<>();
+            String kueri = "SELECT * FROM tb_akun;";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int idAkun = rs.getInt("id_akun");
+                    String username = rs.getString("username");
+                    String password = rs.getString("password");
+                    String nama = rs.getString("nama");
+                    String nomerTelepon = rs.getString("nomer_telepon");
+                    String alamat = rs.getString("alamat");
+                    int role = rs.getInt("role");
+                    int status = rs.getInt("status");
+                    Akun akun = new Akun(idAkun, role, status, username, password, nama, nomerTelepon, alamat);
+                    arrAkun.add(akun);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
+    
+    public void tampilDataAkun(){
+        loadDataAkun();
+        modelAkun.setRowCount(0);
+        int nomer = 1;
+        for (Akun a : arrAkun) {
+            modelAkun.addRow(new Object[]{nomer, a.getUsername(), a.getNama(), a.getNomerTelepon(), a.getRole(), a.getStatus()});
+            nomer++;
+        }
     }
 
     private void gantiWarnaSidePanel(JPanel jPanel, JPanel panelIndikator) {
@@ -158,7 +213,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel24 = new javax.swing.JLabel();
         btnTambahAkun = new javax.swing.JButton();
         jScrollPane9 = new javax.swing.JScrollPane();
-        jTable9 = new javax.swing.JTable();
+        jTAkun = new javax.swing.JTable();
         panCardCetakLaporan = new javax.swing.JPanel();
         jPanel13 = new javax.swing.JPanel();
         jLabel25 = new javax.swing.JLabel();
@@ -1089,18 +1144,27 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        jTable9.setModel(new javax.swing.table.DefaultTableModel(
+        jTAkun.setAutoCreateRowSorter(true);
+        jTAkun.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "No", "Username", "Nama", "Nomer Telepon", "Tipe Akun", "Status"
             }
-        ));
-        jScrollPane9.setViewportView(jTable9);
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane9.setViewportView(jTAkun);
 
         javax.swing.GroupLayout panCardAkunLayout = new javax.swing.GroupLayout(panCardAkun);
         panCardAkun.setLayout(panCardAkunLayout);
@@ -1403,6 +1467,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private void sideBtnAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnAkunMouseClicked
         gantiWarnaSidePanel(sideBtnAkun, panIndikatorAkun);
         cardLayout.show(panCard, "panCardAkun");
+        loadKolomAkun();
+        jTAkun.setModel(modelAkun);
+        tampilDataAkun();
     }//GEN-LAST:event_sideBtnAkunMouseClicked
 
     private void sideBtnCetakLaporanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnCetakLaporanMouseClicked
@@ -1436,6 +1503,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         JFrameAkun jFrameAkun = new JFrameAkun();
         jFrameAkun.setLocationRelativeTo(null);
         jFrameAkun.setVisible(true);
+        
     }//GEN-LAST:event_btnTambahAkunActionPerformed
 
     private void btnEditDataPengaturanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDataPengaturanActionPerformed
@@ -1565,10 +1633,10 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JTable jTAkun;
     private javax.swing.JTable jTable10;
     private javax.swing.JTable jTable7;
     private javax.swing.JTable jTable8;
-    private javax.swing.JTable jTable9;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
