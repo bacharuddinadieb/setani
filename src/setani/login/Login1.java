@@ -5,17 +5,36 @@
  */
 package setani.login;
 
+import com.mysql.jdbc.Connection;
+import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
+import setani.koneksi.koneksi;
+import java.sql.ResultSet;
+
 /**
  *
  * @author user
  */
 public class Login1 extends javax.swing.JFrame {
+    // Register regis=new Register();
+
+    ResultSet rs = null;
 
     /**
      * Creates new form Login1
      */
+    informasiLogin il;
     public Login1() {
         initComponents();
+        conn = koneksi.bukaKoneksi();
+        //Statement rs=null;
+
+    }
+    Connection conn;
+
+    public void bersih() {
+        username.setText("");
+        password.setText("");
     }
 
     /**
@@ -39,10 +58,10 @@ public class Login1 extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         username = new javax.swing.JTextField();
-        password = new javax.swing.JTextField();
         jLogin = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
         jRegister = new javax.swing.JButton();
+        password = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -157,6 +176,11 @@ public class Login1 extends javax.swing.JFrame {
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(username))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 40, Short.MAX_VALUE)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
@@ -167,12 +191,7 @@ public class Login1 extends javax.swing.JFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLogin)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(password)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 40, Short.MAX_VALUE)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(password))))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -184,13 +203,13 @@ public class Login1 extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
+                .addGap(31, 31, 31)
                 .addComponent(jLogin)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jRegister))
@@ -203,13 +222,84 @@ public class Login1 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jLoginActionPerformed
-        
+        try {
+            //Connection conn = koneksi.bukaKoneksi();
+            //Statement sr = (Statement) conn.createStatement();
+            String usercheck = null, passcheck = null, nama, nomerTelepon, alamat;
+            int role = 0, id_akun, status;
+            String user = username.getText();
+            String pass = password.getText();
+
+            String kueri = "SELECT * FROM tb_akun WHERE username='" + username.getText() + "'";
+            PreparedStatement ps = conn.prepareStatement(kueri);
+
+            rs = ps.executeQuery(kueri);
+            ResultSet r = rs;
+            while (r.next()) {
+                usercheck = r.getString("username");
+                passcheck = r.getString("password");
+                nama = r.getString("nama");
+                nomerTelepon = r.getString("nomer_telepon");
+                alamat = r.getString("alamat");
+                id_akun = r.getInt("id_akun");
+                status = r.getInt("status");
+                role = r.getInt("role");
+                il = new informasiLogin(id_akun, role, status, nama, usercheck, alamat, nomerTelepon);
+//                il.arrDataLogin.add(il);
+                System.out.println(il.getNama());
+                break;
+            }
+//            System.out.println(usercheck + "\n" + passcheck);
+            //boolean masuk = false;
+            //masuk = ps.execute();
+//					if(rs.next()){
+            if (user.equals(usercheck) && pass.equals(passcheck)) {
+                JOptionPane.showMessageDialog(null, "Selamat Datang", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+                switch (role) {
+                    case 1:
+                        new setani.petani.MainDashboardPetani(il).setVisible(true);
+                        this.dispose();
+                        break;
+                    case 2:
+                        new setani.pembeli.MainDashboardPembeli().setVisible(true);
+                        this.dispose();
+                        break;
+                    case 3:
+                        new setani.admin.MainDashboardAdmin().setVisible(true);
+                        this.dispose();
+                        break;
+                }
+//                                            }
+            } else {
+                JOptionPane.showMessageDialog(null, "Username atau Password salah", "Pesan", JOptionPane.ERROR_MESSAGE);
+                username.setText("");
+                password.setText("");
+                username.requestFocus();
+                //  System.out.println(masuk);
+            }
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        /*  if(username.getText().equals("")||password.getPassword().equals("")){
+               JOptionPane.showMessageDialog(this, "login Berhasil");
+               new setani.petani.MainDashboardPetani2().setVisible(true);
+               this.dispose();
+         }
+         else {
+             if(username.getText().equals("")||password.getPassword().equals("")){
+               JOptionPane.showMessageDialog(this, "Anda Belum Mengisi Dengan Lengkap","pesan",JOptionPane.ERROR_MESSAGE);
+               bersih();
+            }else{
+                 JOptionPane.showMessageDialog(this, "Anda Belum Punya Akun","pesan",JOptionPane.ERROR_MESSAGE);
+                 bersih();
+            }
+        }*/
     }//GEN-LAST:event_jLoginActionPerformed
 
     private void jRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRegisterActionPerformed
         new Registrasi().setVisible(true);
         this.dispose();
-        
+
     }//GEN-LAST:event_jRegisterActionPerformed
 
     /**
@@ -238,6 +328,7 @@ public class Login1 extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Login1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -262,7 +353,7 @@ public class Login1 extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton jRegister;
-    private javax.swing.JTextField password;
+    private javax.swing.JPasswordField password;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }

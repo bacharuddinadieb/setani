@@ -7,8 +7,10 @@ package setani.login;
 
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
-import java.awt.HeadlessException;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import setani.koneksi.koneksi;
 
@@ -26,21 +28,42 @@ public class Registrasi extends javax.swing.JFrame {
         initComponents();
         conn = koneksi.bukaKoneksi();
         Statement sr=null;
+        
     }
     Connection conn;
     
     public void bersih(){
+        //id_akun.setText("");
         username.setText("");
         password.setText("");
         nama.setText("");
-        nomorTelepon.setText("");
+        nomer_telepon.setText("");
         alamat.setText("");
         role.setToolTipText("");
-        status.setToolTipText("");
+       
     }
-    private void dataregister(){
-        String kueri="INSERT INTO tb_akun (id_akun,username,password,nama,nomor_telepon,alamat,role,status) VALUES(?,?,?,?,?,?,?,?)";
-        //PreparedStatement ps=conn.prepareStatement(kueri);
+    public void dataregister( String username, String password, String nama, int nomer_telepon, String alamat, int role)throws SQLException{
+        if(conn != null){
+            try{
+        String kueri="INSERT INTO tb_akun (username,password,nama,nomer_telepon,alamat,role,status) VALUES(?,?,?,?,?,?,?)";
+        PreparedStatement ps=conn.prepareStatement(kueri);
+       // ps.setInt(1, id_akun);
+        ps.setString(1, username);
+        ps.setString(2, password);
+        ps.setString(3, nama);
+        ps.setInt(4, nomer_telepon);
+        ps.setString(5, alamat);
+        ps.setInt(6, role);
+        ps.setInt(7, 1);
+       
+        int hasil=ps.executeUpdate();
+                if(hasil > 0){
+                    JOptionPane.showMessageDialog(this,"Input Berhasil");  
+                }
+            }catch (SQLException ex){
+                Logger.getLogger(Registrasi.class.getName()).log(Level.SEVERE,null, ex);
+            }
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -70,14 +93,12 @@ public class Registrasi extends javax.swing.JFrame {
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
         nama = new javax.swing.JTextField();
         alamat = new javax.swing.JTextField();
         role = new javax.swing.JComboBox();
-        status = new javax.swing.JComboBox();
         password = new javax.swing.JPasswordField();
         jLabel15 = new javax.swing.JLabel();
-        nomorTelepon = new javax.swing.JTextField();
+        nomer_telepon = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -201,18 +222,12 @@ public class Registrasi extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("Role         :");
 
-        jLabel14.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("Status      :");
-
-        role.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Petani", "Pembel", "Admin" }));
+        role.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Petani", "Pembeli" }));
         role.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 roleActionPerformed(evt);
             }
         });
-
-        status.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kawin", "Belum Kawin" }));
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
@@ -234,11 +249,8 @@ public class Registrasi extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(71, 71, 71)
+                                .addComponent(jRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                     .addComponent(jLabel8)
@@ -260,12 +272,12 @@ public class Registrasi extends javax.swing.JFrame {
                                     .addComponent(jLabel12)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(alamat, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(43, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nomorTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(nomer_telepon, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -288,7 +300,7 @@ public class Registrasi extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel15)
-                    .addComponent(nomorTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nomer_telepon, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(alamat, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -297,11 +309,7 @@ public class Registrasi extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
                     .addComponent(role, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel14)
-                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
+                .addGap(26, 26, 26)
                 .addComponent(jRegister)
                 .addGap(47, 47, 47)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -324,24 +332,53 @@ public class Registrasi extends javax.swing.JFrame {
         new Login1().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLoginActionPerformed
-
+    
+    public int numkRole(String role){
+        int num = 0;
+        switch(role){
+            case "Petani":
+                num = 1;
+                break;
+                case "Pembeli":
+                num = 2;
+                break;
+                
+        }
+        return num;
+    }
+   
+    
     private void jRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRegisterActionPerformed
         // TODO add your handling code here:
-       try{
-           if(username.getText().equals("")||password.getPassword().equals("")||nama.getText().equals("")||
-                   alamat.getText().equals("")||role.getToolTipText().equals("")||status.getToolTipText().equals("")){
+       // int sid_akun=Integer.parseInt(id_akun.getText());
+        String susername = username.getText();
+        String spassword = String.valueOf(password.getPassword());
+        String snama = nama.getText();
+        int notelp = Integer.parseInt(nomer_telepon.getText());
+        String salamat=alamat.getText();
+        String srole= role.getSelectedItem().toString();
+        System.out.println(srole);
+        int hasilRole = numkRole(srole);
+        
+        
+        if(username.getText().equals("")||password.getPassword().equals("")||
+                nama.getText().equals("")||nomer_telepon.getText().equals("")||
+                   alamat.getText().equals("")||srole.equals("")){
                JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!!","esan", JOptionPane.ERROR_MESSAGE);
                bersih();
-           }else{
-               
-           }
-          
-       }
-       catch(Exception e){
-           
-       }
-        new Login1().setVisible(true);
-        this.dispose();
+        }else{
+            
+                try{
+                dataregister(susername, spassword, snama, notelp, salamat, hasilRole);
+                JOptionPane.showMessageDialog(this, "Register Berhasil","esan", JOptionPane.ERROR_MESSAGE);
+                new Login1().setVisible(true);
+                this.dispose();
+                }catch(SQLException e){
+                    Logger.getLogger(Registrasi.class.getName()).log(Level.SEVERE,null, e);
+                }  
+            
+            
+        }
     }//GEN-LAST:event_jRegisterActionPerformed
     
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
@@ -374,6 +411,7 @@ public class Registrasi extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Registrasi.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -390,7 +428,6 @@ public class Registrasi extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -405,11 +442,10 @@ public class Registrasi extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JButton jRegister;
     private javax.swing.JTextField nama;
-    private javax.swing.JTextField nomorTelepon;
+    private javax.swing.JTextField nomer_telepon;
     private javax.swing.JPasswordField password;
     private javax.swing.JTextField password2;
     private javax.swing.JComboBox role;
-    private javax.swing.JComboBox status;
     private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }
