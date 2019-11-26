@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import setani.koneksi.koneksi;
 
-
 /**
  *
  * @author user
@@ -27,12 +26,12 @@ public class Registrasi extends javax.swing.JFrame {
     public Registrasi() {
         initComponents();
         conn = koneksi.bukaKoneksi();
-        Statement sr=null;
-        
+        Statement sr = null;
+
     }
     Connection conn;
-    
-    public void bersih(){
+
+    public void bersih() {
         //id_akun.setText("");
         username.setText("");
         password.setText("");
@@ -40,31 +39,33 @@ public class Registrasi extends javax.swing.JFrame {
         nomer_telepon.setText("");
         alamat.setText("");
         role.setToolTipText("");
-       
+
     }
-    public void dataregister( String username, String password, String nama, int nomer_telepon, String alamat, int role)throws SQLException{
-        if(conn != null){
-            try{
-        String kueri="INSERT INTO tb_akun (username,password,nama,nomer_telepon,alamat,role,status) VALUES(?,?,?,?,?,?,?)";
-        PreparedStatement ps=conn.prepareStatement(kueri);
-       // ps.setInt(1, id_akun);
-        ps.setString(1, username);
-        ps.setString(2, password);
-        ps.setString(3, nama);
-        ps.setInt(4, nomer_telepon);
-        ps.setString(5, alamat);
-        ps.setInt(6, role);
-        ps.setInt(7, 1);
-       
-        int hasil=ps.executeUpdate();
-                if(hasil > 0){
-                    JOptionPane.showMessageDialog(this,"Input Berhasil");  
+
+    public void dataregister(String username, String password, String nama, int nomer_telepon, String alamat, int role) throws SQLException {
+        if (conn != null) {
+            try {
+                String kueri = "INSERT INTO tb_akun (username,password,nama,nomer_telepon,alamat,role,status) VALUES(?,?,?,?,?,?,?)";
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                // ps.setInt(1, id_akun);
+                ps.setString(1, username);
+                ps.setString(2, password);
+                ps.setString(3, nama);
+                ps.setInt(4, nomer_telepon);
+                ps.setString(5, alamat);
+                ps.setInt(6, role);
+                ps.setInt(7, 1);
+
+                int hasil = ps.executeUpdate();
+                if (hasil > 0) {
+                    JOptionPane.showMessageDialog(this, "Input Berhasil");
                 }
-            }catch (SQLException ex){
-                Logger.getLogger(Registrasi.class.getName()).log(Level.SEVERE,null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Registrasi.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -332,55 +333,53 @@ public class Registrasi extends javax.swing.JFrame {
         new Login1().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLoginActionPerformed
-    
-    public int numkRole(String role){
+
+    public int numkRole(String role) {
         int num = 0;
-        switch(role){
+        switch (role) {
             case "Petani":
                 num = 1;
                 break;
-                case "Pembeli":
+            case "Pembeli":
                 num = 2;
                 break;
-                
+
         }
         return num;
     }
-   
-    
+
+
     private void jRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRegisterActionPerformed
         // TODO add your handling code here:
-       // int sid_akun=Integer.parseInt(id_akun.getText());
+        // int sid_akun=Integer.parseInt(id_akun.getText());
         String susername = username.getText();
         String spassword = String.valueOf(password.getPassword());
         String snama = nama.getText();
         int notelp = Integer.parseInt(nomer_telepon.getText());
-        String salamat=alamat.getText();
-        String srole= role.getSelectedItem().toString();
+        String salamat = alamat.getText();
+        String srole = role.getSelectedItem().toString();
         System.out.println(srole);
         int hasilRole = numkRole(srole);
-        
-        
-        if(username.getText().equals("")||password.getPassword().equals("")||
-                nama.getText().equals("")||nomer_telepon.getText().equals("")||
-                   alamat.getText().equals("")||srole.equals("")){
-               JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!!","esan", JOptionPane.ERROR_MESSAGE);
-               bersih();
-        }else{
-            
-                try{
+
+        if (username.getText().equals("") || password.getPassword().equals("")
+                || nama.getText().equals("") || nomer_telepon.getText().equals("")
+                || alamat.getText().equals("") || srole.equals("")) {
+            JOptionPane.showMessageDialog(this, "Data Tidak Boleh Kosong!!", "esan", JOptionPane.ERROR_MESSAGE);
+            bersih();
+        } else {
+
+            try {
                 dataregister(susername, spassword, snama, notelp, salamat, hasilRole);
-                JOptionPane.showMessageDialog(this, "Register Berhasil","esan", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Register Berhasil", "esan", JOptionPane.ERROR_MESSAGE);
                 new Login1().setVisible(true);
                 this.dispose();
-                }catch(SQLException e){
-                    Logger.getLogger(Registrasi.class.getName()).log(Level.SEVERE,null, e);
-                }  
-            
-            
+            } catch (SQLException e) {
+                Logger.getLogger(Registrasi.class.getName()).log(Level.SEVERE, null, e);
+            }
+
         }
     }//GEN-LAST:event_jRegisterActionPerformed
-    
+
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameActionPerformed
@@ -416,7 +415,7 @@ public class Registrasi extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               new Registrasi().setVisible(true);
+                new Registrasi().setVisible(true);
             }
         });
     }
