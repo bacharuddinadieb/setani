@@ -27,6 +27,36 @@ public class datapanen {
         
     }
 
+    public void setId_hasilpanen(int id_hasilpanen) {
+        this.id_hasilpanen = id_hasilpanen;
+    }
+
+    public void setId_akun(int id_akun) {
+        this.id_akun = id_akun;
+    }
+
+    public void setBerat_komoditas_panen(int berat_komoditas_panen) {
+        this.berat_komoditas_panen = berat_komoditas_panen;
+    }
+
+    public void setHarga_jual_perkilo(int harga_jual_perkilo) {
+        this.harga_jual_perkilo = harga_jual_perkilo;
+    }
+
+    public void setNama_komoditas_panen(String nama_komoditas_panen) {
+        this.nama_komoditas_panen = nama_komoditas_panen;
+    }
+
+    public void setTipe_komoditas_panen(String tipe_komoditas_panen) {
+        this.tipe_komoditas_panen = tipe_komoditas_panen;
+    }
+
+    public void setTanggal_panen(String tanggal_panen) {
+        this.tanggal_panen = tanggal_panen;
+    }
+    
+    
+
     public int getHarga_jual_perkilo() {
         return harga_jual_perkilo;
     }

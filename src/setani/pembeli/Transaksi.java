@@ -6,18 +6,11 @@
 package setani.pembeli;
 
 import setani.petani.*;
-import com.mysql.jdbc.PreparedStatement;
-import java.awt.CardLayout;
-import java.lang.System.Logger;
-import java.lang.System.Logger.Level;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
 import setani.koneksi.koneksi;
 import setani.login.informasiLogin;
-import setani.petani.*;
 
 /**
  *
@@ -29,9 +22,10 @@ public class Transaksi extends javax.swing.JFrame {
      * Creates new form JFrameTambahHasilPanen
      */
     informasiLogin infoLogin;
-    int idHasilPanen, harga, idPenjual;
+    int idHasilPanen, harga, idPenjual, baris;
+    public MainDashboardPembeli mdp;
 
-    public Transaksi(informasiLogin login, int id_hasil_panen, int harga_hasil_panen, int id_penjual) {
+    public Transaksi(MainDashboardPembeli mainDashboardPembeli, informasiLogin login, int barisKe, int id_hasil_panen, int harga_hasil_panen, int id_penjual) {
         initComponents();
         conn = koneksi.bukaKoneksi();
         infoLogin = login;
@@ -42,14 +36,36 @@ public class Transaksi extends javax.swing.JFrame {
         idHasilPanen = id_hasil_panen;
         harga = harga_hasil_panen;
         idPenjual = id_penjual;
+        mdp = mainDashboardPembeli;
+        baris = barisKe;
     }
 
-//    public JFrameHasilPanen() {
-//        initComponents();
-//        conn = koneksi.bukaKoneksi();
-//    }
     private Connection conn;
-    private ArrayList<datapanen> daftarpanen;
+
+    public void loadpanen() {
+        if (conn != null) {
+            String kueri = "SELECT * FROM tb_hasil_panen WHERE id_hasil_panen = '" + idHasilPanen + "'";
+            try {
+                java.sql.PreparedStatement ps = conn.prepareStatement(kueri);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_hasilpanen = rs.getInt("id_hasil_panen");
+                    int id_akun = rs.getInt("id_akun");
+                    String nama_komoditas_panen = rs.getString("nama_komoditas_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    int berat_komoditas_panen = Integer.parseInt(jumlahkg.getText());
+                    int harga_jual_perkilo = rs.getInt("harga_jual_kg");
+                    String tanggal_panen = rs.getString("tanggal_panen");
+                    datapanen data = new datapanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    mdp.daftarPanenMauDiBeli.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                java.util.logging.Logger.getLogger(MainDashboardPembeli.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -89,6 +105,7 @@ public class Transaksi extends javax.swing.JFrame {
         jLabel2.setText("Masukan Nama Anda");
 
         namaPembeli.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        namaPembeli.setFocusable(false);
         namaPembeli.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 namaPembeliActionPerformed(evt);
@@ -96,6 +113,7 @@ public class Transaksi extends javax.swing.JFrame {
         });
 
         noTelepone.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        noTelepone.setFocusable(false);
         noTelepone.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 noTeleponeActionPerformed(evt);
@@ -216,12 +234,18 @@ public class Transaksi extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         setVisible(false);
         dispose();
-        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jBeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBeliActionPerformed
         // TODO add your handling code here:
-        
+        loadpanen();
+        int totalBerat = mdp.daftarpanen.get(baris).getBerat_komoditas_panen() - Integer.parseInt(jumlahkg.getText());
+        mdp.tampilDataPanen2();
+        mdp.daftarpanen.get(baris).setBerat_komoditas_panen(totalBerat);
+        mdp.loadTabelHasilPanenYangMauDibeli();
+        mdp.tampilDataPanen();
+        setVisible(false);
+        dispose();
     }//GEN-LAST:event_jBeliActionPerformed
 
     private void namaPembeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaPembeliActionPerformed

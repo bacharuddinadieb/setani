@@ -16,6 +16,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
+import setani.login.informasiLogin;
 
 /**
  *
@@ -27,16 +28,17 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
      * Creates new form MainDashboardAdmin
      */
     private final CardLayout cardLayout;
+    informasiLogin informasilogin;
     private ArrayList<Akun> arrAkun = new ArrayList<>();
     private Connection conn;
     private DefaultTableModel modelAkun = new DefaultTableModel();
     
-    public MainDashboardAdmin() {
+    public MainDashboardAdmin(informasiLogin login) {
         initComponents();
         lblIconCariAtas.setVisible(false);
         tfCari.setVisible(false);
         cardLayout = (CardLayout)(panCard.getLayout());
-        
+        informasilogin = login;
         conn = koneksi.bukaKoneksi();
     }
     
@@ -1541,9 +1543,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
 //                new MainDashboardAdmin().setVisible(true);
-                MainDashboardAdmin mainDashboardAdmin = new MainDashboardAdmin();
-                mainDashboardAdmin.setLocationRelativeTo(null);
-                mainDashboardAdmin.setVisible(true);
+//                MainDashboardAdmin mainDashboardAdmin = new MainDashboardAdmin();
+//                mainDashboardAdmin.setLocationRelativeTo(null);
+//                mainDashboardAdmin.setVisible(true);
             }
         });
     }

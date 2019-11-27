@@ -24,6 +24,7 @@ public class Login1 extends javax.swing.JFrame {
      * Creates new form Login1
      */
     informasiLogin il;
+
     public Login1() {
         initComponents();
         conn = koneksi.bukaKoneksi();
@@ -254,7 +255,7 @@ public class Login1 extends javax.swing.JFrame {
             //masuk = ps.execute();
 //					if(rs.next()){
             if (user.equals(usercheck) && pass.equals(passcheck)) {
-                JOptionPane.showMessageDialog(null, "Selamat Datang", "Pesan", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Selamat Datang " + il.getNama(), "Pesan", JOptionPane.INFORMATION_MESSAGE);
                 switch (role) {
                     case 1:
                         new setani.petani.MainDashboardPetani(il).setVisible(true);
@@ -265,7 +266,7 @@ public class Login1 extends javax.swing.JFrame {
                         this.dispose();
                         break;
                     case 3:
-                        new setani.admin.MainDashboardAdmin().setVisible(true);
+                        new setani.admin.MainDashboardAdmin(il).setVisible(true);
                         this.dispose();
                         break;
                 }
