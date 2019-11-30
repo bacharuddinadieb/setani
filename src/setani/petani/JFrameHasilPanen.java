@@ -259,7 +259,7 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Isi field yang kosong");
 
         } else {
-            JOptionPane.showMessageDialog(this, "Test Submit");
+            //JOptionPane.showMessageDialog(this, "Berhasil Menambahkan Hasil Panen!");
             tambahData(nama_komoditas_panen, tipe_komoditas_panen, berat_komoditas_panen, harga_jual_perkilo, tanggal_panen);
         }
     }//GEN-LAST:event_jButton1ActionPerformed

@@ -12,11 +12,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
 import setani.login.informasiLogin;
+import setani.pembeli.MainDashboardPembeli;
+import setani.petani.datapanen;
 
 /**
  *
@@ -30,8 +34,11 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private final CardLayout cardLayout;
     informasiLogin informasilogin;
     private ArrayList<Akun> arrAkun = new ArrayList<>();
+     ArrayList<datapanen> daftarpanen = new ArrayList<>();
     private Connection conn;
     private DefaultTableModel modelAkun = new DefaultTableModel();
+    private DefaultTableModel model = new DefaultTableModel();
+
     
     public MainDashboardAdmin(informasiLogin login) {
         initComponents();
@@ -40,6 +47,11 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         cardLayout = (CardLayout)(panCard.getLayout());
         informasilogin = login;
         conn = koneksi.bukaKoneksi();
+        jtHasilPanen.setModel(model);
+        loadkolom();
+        loadKolomAkun();
+        loadpanen();
+        tampilDataPanen();
     }
     
     private void loadKolomAkun() {
@@ -85,6 +97,55 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         for (Akun a : arrAkun) {
             modelAkun.addRow(new Object[]{nomer, a.getUsername(), a.getNama(), a.getNomerTelepon(), a.getRole(), a.getStatus()});
             nomer++;
+        }
+    }
+    
+    //data Panen
+    private void loadkolom() {
+        model.addColumn("nama_komoditas_panen");
+        model.addColumn("tipe_komoditas_panen");
+        model.addColumn("berat_komoditas_panen");
+        model.addColumn("harga_jual_kg");
+        model.addColumn("tanggal_panen");
+   
+    }
+
+    private void loadpanen() {
+        if (conn != null) {
+            String kueri = "SELECT * FROM tb_hasil_panen";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_hasilpanen = rs.getInt("id_hasil_panen");
+                    int id_akun = rs.getInt("id_akun");
+                    String nama_komoditas_panen = rs.getString("nama_komoditas_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
+                    int harga_jual_perkilo = rs.getInt("harga_jual_kg");
+                    String tanggal_panen = rs.getString("tanggal_panen");
+                    datapanen data = new datapanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    daftarpanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    void tampilDataPanen() {
+        model.setRowCount(0);
+        for (datapanen b : daftarpanen) {
+            model.addRow(new Object[]{
+                b.getNama_komoditas_panen(),
+                b.getTipe_komoditas_panen(),
+                b.getBerat_komoditas_panen(),
+                b.getHarga_jual_perkilo(),
+                b.getTanggal_panen()
+
+            });
         }
     }
 
@@ -204,7 +265,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         btnTambahHasilPanen = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable7 = new javax.swing.JTable();
+        jtHasilPanen = new javax.swing.JTable();
         panCardTransaksi = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
@@ -1016,7 +1077,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        jTable7.setModel(new javax.swing.table.DefaultTableModel(
+        jtHasilPanen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -1027,7 +1088,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane7.setViewportView(jTable7);
+        jScrollPane7.setViewportView(jtHasilPanen);
 
         javax.swing.GroupLayout panCardHasilPanenLayout = new javax.swing.GroupLayout(panCardHasilPanen);
         panCardHasilPanen.setLayout(panCardHasilPanenLayout);
@@ -1044,8 +1105,8 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardHasilPanenLayout.createSequentialGroup()
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
-                .addGap(30, 30, 30))
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(276, Short.MAX_VALUE))
         );
 
         panCard.add(panCardHasilPanen, "panCardHasilPanen");
@@ -1469,7 +1530,6 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private void sideBtnAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnAkunMouseClicked
         gantiWarnaSidePanel(sideBtnAkun, panIndikatorAkun);
         cardLayout.show(panCard, "panCardAkun");
-        loadKolomAkun();
         jTAkun.setModel(modelAkun);
         tampilDataAkun();
     }//GEN-LAST:event_sideBtnAkunMouseClicked
@@ -1637,7 +1697,6 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTable jTAkun;
     private javax.swing.JTable jTable10;
-    private javax.swing.JTable jTable7;
     private javax.swing.JTable jTable8;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
@@ -1645,6 +1704,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
+    private javax.swing.JTable jtHasilPanen;
     private javax.swing.JLabel lblIconCariAtas;
     private javax.swing.JLabel lblIconCariAtas1;
     private javax.swing.JPanel panCard;

@@ -343,6 +343,7 @@ public class Registrasi extends javax.swing.JFrame {
             case "Pembeli":
                 num = 2;
                 break;
+               
 
         }
         return num;

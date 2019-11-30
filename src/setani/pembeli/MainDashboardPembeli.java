@@ -50,7 +50,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         loadpanen();
         tampilDataPanen();
         informasilogin = login;
-        jLabelWelcomeHomeName.setText(informasilogin.getNama());
+        jLabelWelcomeHomeName.setText("Selamat datang, " + informasilogin.getNama());
         jLabelTotalHasilPanen.setText(Integer.toString(daftarpanen.size()) + " Komoditas Panen");
     }
 
@@ -568,7 +568,13 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         jPanel3.setOpaque(false);
         jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 15, 3));
 
+        jPanel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jPanel5.setPreferredSize(new java.awt.Dimension(400, 100));
+        jPanel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel5MouseClicked(evt);
+            }
+        });
 
         jLabel30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/hasil_panenx48.png"))); // NOI18N
 
@@ -604,7 +610,13 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
 
         jPanel3.add(jPanel5);
 
+        jPanel6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jPanel6.setPreferredSize(new java.awt.Dimension(400, 100));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
+            }
+        });
 
         jLabel31.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
         jLabel31.setText("Transaksi Beli");
@@ -643,6 +655,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Ubuntu", 0, 22)); // NOI18N
         jLabel17.setText("Aktifitas Terakhir");
 
+        jPanel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jPanel4.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel4MouseClicked(evt);
@@ -686,6 +699,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        jPanel16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jPanel16.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jPanel16MouseClicked(evt);
@@ -744,7 +758,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                         .addGroup(panCardBerandaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jPanel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 870, Short.MAX_VALUE))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE))
                         .addGap(27, 27, 27))))
         );
         panCardBerandaLayout.setVerticalGroup(
@@ -778,7 +792,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel22)
-                .addContainerGap(707, Short.MAX_VALUE))
+                .addContainerGap(713, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -808,7 +822,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCardHasilPanenLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 907, Short.MAX_VALUE)
+                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 917, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panCardHasilPanenLayout.setVerticalGroup(
@@ -1015,7 +1029,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardPengaturanLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 867, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 877, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
         panCardPengaturanLayout.setVerticalGroup(
@@ -1035,7 +1049,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panCard, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -1108,6 +1122,18 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
         cardLayout.show(panCard, "panCardTransaksi");
     }//GEN-LAST:event_jPanel16MouseClicked
+
+    private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
+        // TODO add your handling code here:
+        gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
+        cardLayout.show(panCard, "panCardHasilPanen");
+    }//GEN-LAST:event_jPanel5MouseClicked
+
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+        // TODO add your handling code here:
+        gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
+        cardLayout.show(panCard, "panCardTransaksi");
+    }//GEN-LAST:event_jPanel6MouseClicked
 
     /**
      * @param args the command line arguments
