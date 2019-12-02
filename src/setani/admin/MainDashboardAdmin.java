@@ -18,9 +18,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
-import setani.login.informasiLogin;
+import setani.generic.DataAkun;
 import setani.pembeli.MainDashboardPembeli;
-import setani.petani.datapanen;
+import setani.generic.DataPanen;
 
 /**
  *
@@ -32,15 +32,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
      * Creates new form MainDashboardAdmin
      */
     private final CardLayout cardLayout;
-    informasiLogin informasilogin;
+    DataAkun informasilogin;
     private ArrayList<Akun> arrAkun = new ArrayList<>();
-     ArrayList<datapanen> daftarpanen = new ArrayList<>();
+     ArrayList<DataPanen> daftarpanen = new ArrayList<>();
     private Connection conn;
     private DefaultTableModel modelAkun = new DefaultTableModel();
     private DefaultTableModel model = new DefaultTableModel();
 
     
-    public MainDashboardAdmin(informasiLogin login) {
+    public MainDashboardAdmin(DataAkun login) {
         initComponents();
         lblIconCariAtas.setVisible(false);
         tfCari.setVisible(false);
@@ -124,7 +124,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                     int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
                     int harga_jual_perkilo = rs.getInt("harga_jual_kg");
                     String tanggal_panen = rs.getString("tanggal_panen");
-                    datapanen data = new datapanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
                     daftarpanen.add(data);
                 }
                 rs.close();
@@ -137,7 +137,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
     void tampilDataPanen() {
         model.setRowCount(0);
-        for (datapanen b : daftarpanen) {
+        for (DataPanen b : daftarpanen) {
             model.addRow(new Object[]{
                 b.getNama_komoditas_panen(),
                 b.getTipe_komoditas_panen(),

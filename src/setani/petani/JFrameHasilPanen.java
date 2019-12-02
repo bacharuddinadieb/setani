@@ -5,6 +5,7 @@
  */
 package setani.petani;
 
+import setani.generic.DataPanen;
 import com.mysql.jdbc.PreparedStatement;
 import java.awt.CardLayout;
 import java.lang.System.Logger;
@@ -15,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import setani.koneksi.koneksi;
-import setani.login.informasiLogin;
+import setani.generic.DataAkun;
 import setani.petani.*;
 
 /**
@@ -27,9 +28,9 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
     /**
      * Creates new form JFrameTambahHasilPanen
      */
-    informasiLogin login;
+    DataAkun login;
 
-    public JFrameHasilPanen(informasiLogin login) {
+    public JFrameHasilPanen(DataAkun login) {
         initComponents();
         conn = koneksi.bukaKoneksi();
         this.login = login;
@@ -41,7 +42,7 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
 //        conn = koneksi.bukaKoneksi();
 //    }
     private Connection conn;
-    private ArrayList<datapanen> daftarpanen;
+    private ArrayList<DataPanen> daftarpanen;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -232,7 +233,7 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
                 if (hasil > 0) {
                     JOptionPane.showMessageDialog(this, "Input Berhasil");
                     dispose();
-                    MainDashboardPetani dp = new MainDashboardPetani();
+                    MainDashboardPetani dp = new MainDashboardPetani(login);
                 }
             } catch (SQLException ex) {
                 java.util.logging.Logger.getLogger(JFrameHasilPanen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);

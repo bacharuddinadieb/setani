@@ -5,12 +5,14 @@
  */
 package setani.pembeli;
 
+import setani.generic.DataPanen;
 import setani.petani.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import setani.koneksi.koneksi;
-import setani.login.informasiLogin;
+import setani.generic.DataAkun;
 
 /**
  *
@@ -21,11 +23,12 @@ public class Transaksi extends javax.swing.JFrame {
     /**
      * Creates new form JFrameTambahHasilPanen
      */
-    informasiLogin infoLogin;
-    int idHasilPanen, harga, idPenjual, baris;
-    public MainDashboardPembeli mdp;
+    DataAkun infoLogin;
+    int idHasilPanen, harga, idPenjual, baris, berat;
+    String namaKomoditas;
+    MainDashboardPembeli mdp;
 
-    public Transaksi(MainDashboardPembeli mainDashboardPembeli, informasiLogin login, int barisKe, int id_hasil_panen, int harga_hasil_panen, int id_penjual) {
+    public Transaksi(MainDashboardPembeli mainDashboardPembeli, DataAkun login, int barisKe, DataPanen dataPanen) {
         initComponents();
         conn = koneksi.bukaKoneksi();
         infoLogin = login;
@@ -33,9 +36,11 @@ public class Transaksi extends javax.swing.JFrame {
         namaPembeli.setEditable(false);
         noTelepone.setText(infoLogin.getNomerTelepon());
         noTelepone.setEditable(false);
-        idHasilPanen = id_hasil_panen;
-        harga = harga_hasil_panen;
-        idPenjual = id_penjual;
+        idHasilPanen = dataPanen.getId_hasilpanen();
+        harga = dataPanen.getHarga_jual_perkilo();
+        idPenjual = dataPanen.getId_akun();
+        berat = dataPanen.getBerat_komoditas_panen();
+        namaKomoditas = dataPanen.getNama_komoditas_panen();
         mdp = mainDashboardPembeli;
         baris = barisKe;
     }
@@ -56,7 +61,7 @@ public class Transaksi extends javax.swing.JFrame {
                     int berat_komoditas_panen = Integer.parseInt(jumlahkg.getText());
                     int harga_jual_perkilo = rs.getInt("harga_jual_kg");
                     String tanggal_panen = rs.getString("tanggal_panen");
-                    datapanen data = new datapanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
                     mdp.daftarPanenMauDiBeli.add(data);
                 }
                 rs.close();
@@ -238,14 +243,18 @@ public class Transaksi extends javax.swing.JFrame {
 
     private void jBeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBeliActionPerformed
         // TODO add your handling code here:
-        loadpanen();
-        int totalBerat = mdp.daftarpanen.get(baris).getBerat_komoditas_panen() - Integer.parseInt(jumlahkg.getText());
-        mdp.tampilDataPanen2();
-        mdp.daftarpanen.get(baris).setBerat_komoditas_panen(totalBerat);
-        mdp.loadTabelHasilPanenYangMauDibeli();
-        mdp.tampilDataPanen();
-        setVisible(false);
-        dispose();
+        if (Integer.parseInt(jumlahkg.getText()) <= berat) {
+            loadpanen();
+            int totalBerat = mdp.daftarpanen.get(baris).getBerat_komoditas_panen() - Integer.parseInt(jumlahkg.getText());
+            mdp.tampilDataPanen2();
+            mdp.daftarpanen.get(baris).setBerat_komoditas_panen(totalBerat);
+            mdp.tampilDataPanen();
+            setVisible(false);
+            dispose();        
+        } else {
+            JOptionPane.showMessageDialog(null, "Stok komoditas hasil panen '" + namaKomoditas + "' tidak mencukupi, Silahkan pilih sesuai dengan beratnya!", "Pesan", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_jBeliActionPerformed
 
     private void namaPembeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_namaPembeliActionPerformed

@@ -5,6 +5,7 @@
  */
 package setani.petani;
 
+import setani.generic.DataPanen;
 import setani.admin.*;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
 
 import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
-import setani.login.informasiLogin;
+import setani.generic.DataAkun;
 /**
  *
  * @author matohdev
@@ -30,8 +31,8 @@ public class MainDashboardPetani extends javax.swing.JFrame {
      * Creates new form MainDashboardAdmin
      */
     private final CardLayout cardLayout;
-    informasiLogin informasilogin;
-    public MainDashboardPetani(informasiLogin login) {
+    DataAkun informasilogin;
+    public MainDashboardPetani(DataAkun login) {
         initComponents();
         cardLayout = (CardLayout)(panCard.getLayout());
         conn=koneksi.bukaKoneksi();
@@ -42,18 +43,9 @@ public class MainDashboardPetani extends javax.swing.JFrame {
         informasilogin = login;
     }
     
-    public MainDashboardPetani(){
-        initComponents();
-        cardLayout = (CardLayout)(panCard.getLayout());
-        conn=koneksi.bukaKoneksi();
-        jtHasilPanen.setModel(model);
-        loadkolom();
-        loadpanen();
-        tampilDataPanen();
-    }
     private DefaultTableModel model=new DefaultTableModel();
     private Connection conn;
-    private ArrayList<datapanen> daftarpanen;
+    private ArrayList<DataPanen> daftarpanen;
     private void loadkolom(){
         model.addColumn("nama_komoditas_panen");
         model.addColumn("tipe_komoditas_panen");
@@ -77,7 +69,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                         int berat_komoditas_panen=rs.getInt("berat_komoditas_panen");
                         int harga_jual_perkilo=rs.getInt("harga_jual_kg");
                         String tanggal_panen=rs.getString("tanggal_panen");
-                        datapanen data=new datapanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                        DataPanen data=new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
                         daftarpanen.add(data);
                     }
                     rs.close();
@@ -90,7 +82,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
     }
     public void tampilDataPanen(){
         model.setRowCount(0);
-        for(datapanen b:daftarpanen){
+        for(DataPanen b:daftarpanen){
             model.addRow(new Object[]{
                 b.getNama_komoditas_panen(),
                 b.getTipe_komoditas_panen(),
@@ -1131,9 +1123,9 @@ public class MainDashboardPetani extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
 //                new MainDashboardAdmin().setVisible(true);
-                MainDashboardPetani mainDashboardPetani = new MainDashboardPetani();
-                mainDashboardPetani.setLocationRelativeTo(null);
-                mainDashboardPetani.setVisible(true);
+//                MainDashboardPetani mainDashboardPetani = new MainDashboardPetani();
+//                mainDashboardPetani.setLocationRelativeTo(null);
+//                mainDashboardPetani.setVisible(true);
             }
         });
     }

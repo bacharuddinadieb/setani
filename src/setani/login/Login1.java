@@ -5,25 +5,28 @@
  */
 package setani.login;
 
+import setani.generic.DataAkun;
 import com.mysql.jdbc.Connection;
 import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 import setani.koneksi.koneksi;
 import java.sql.ResultSet;
+import setani.admin.MainDashboardAdmin;
+import setani.pembeli.MainDashboardPembeli;
+import setani.petani.MainDashboardPetani;
 
 /**
  *
  * @author user
  */
 public class Login1 extends javax.swing.JFrame {
-    // Register regis=new Register();
 
     ResultSet rs = null;
 
     /**
      * Creates new form Login1
      */
-    informasiLogin il;
+    DataAkun il;
 
     public Login1() {
         initComponents();
@@ -177,8 +180,6 @@ public class Login1 extends javax.swing.JFrame {
 
     private void jLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jLoginActionPerformed
         try {
-            //Connection conn = koneksi.bukaKoneksi();
-            //Statement sr = (Statement) conn.createStatement();
             String usercheck = null, passcheck = null, nama, nomerTelepon, alamat;
             int role = 0, id_akun, status;
             String user = username.getText();
@@ -198,62 +199,52 @@ public class Login1 extends javax.swing.JFrame {
                 id_akun = r.getInt("id_akun");
                 status = r.getInt("status");
                 role = r.getInt("role");
-                il = new informasiLogin(id_akun, role, status, nama, usercheck, alamat, nomerTelepon);
-//                il.arrDataLogin.add(il);
+                il = new DataAkun(id_akun, role, status, nama, usercheck, alamat, nomerTelepon);
                 System.out.println(il.getNama());
                 break;
             }
-//            System.out.println(usercheck + "\n" + passcheck);
-            //boolean masuk = false;
-            //masuk = ps.execute();
-//					if(rs.next()){
             if (user.equals(usercheck) && pass.equals(passcheck)) {
                 JOptionPane.showMessageDialog(null, "Selamat Datang " + il.getNama(), "Pesan", JOptionPane.INFORMATION_MESSAGE);
                 switch (role) {
                     case 1:
-                        new setani.petani.MainDashboardPetani(il).setVisible(true);
+                        MainDashboardAdmin mda = new MainDashboardAdmin(il);
+                        mda.setTitle("Dashboard Admin");
+                        mda.setLocationRelativeTo(null);
+                        mda.setVisible(true);
                         this.dispose();
                         break;
                     case 2:
-                        new setani.pembeli.MainDashboardPembeli(il).setVisible(true);
+                        MainDashboardPetani mdp = new MainDashboardPetani(il);
+                        mdp.setTitle("Dashboard Petani");
+                        mdp.setLocationRelativeTo(null);
+                        mdp.setVisible(true);
                         this.dispose();
                         break;
                     case 3:
-                        new setani.admin.MainDashboardAdmin(il).setVisible(true);
+                        MainDashboardPembeli mdp1 = new MainDashboardPembeli(il);
+                        mdp1.setTitle("Dashboard Pembeli");
+                        mdp1.setLocationRelativeTo(null);
+                        mdp1.setVisible(true);
                         this.dispose();
                         break;
                 }
-//                                            }
             } else {
                 JOptionPane.showMessageDialog(null, "Username atau Password salah", "Pesan", JOptionPane.ERROR_MESSAGE);
                 username.setText("");
                 password.setText("");
                 username.requestFocus();
-                //  System.out.println(masuk);
             }
         } catch (Exception ex) {
             System.out.println(ex);
         }
-        /*  if(username.getText().equals("")||password.getPassword().equals("")){
-               JOptionPane.showMessageDialog(this, "login Berhasil");
-               new setani.petani.MainDashboardPetani2().setVisible(true);
-               this.dispose();
-         }
-         else {
-             if(username.getText().equals("")||password.getPassword().equals("")){
-               JOptionPane.showMessageDialog(this, "Anda Belum Mengisi Dengan Lengkap","pesan",JOptionPane.ERROR_MESSAGE);
-               bersih();
-            }else{
-                 JOptionPane.showMessageDialog(this, "Anda Belum Punya Akun","pesan",JOptionPane.ERROR_MESSAGE);
-                 bersih();
-            }
-        }*/
     }//GEN-LAST:event_jLoginActionPerformed
 
     private void jRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRegisterActionPerformed
-        new Registrasi().setVisible(true);
+        Registrasi registrasi = new Registrasi();
+        registrasi.setTitle("Daftar Pengguna baru Setani");
+        registrasi.setLocationRelativeTo(null);
+        registrasi.setVisible(true);
         this.dispose();
-
     }//GEN-LAST:event_jRegisterActionPerformed
 
     private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
@@ -291,7 +282,10 @@ public class Login1 extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login1().setVisible(true);
+                Login1 login = new Login1();
+                login.setLocationRelativeTo(null);
+                login.setTitle("Login Setani");
+                login.setVisible(true);
             }
         });
     }

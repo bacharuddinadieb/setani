@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package setani.petani;
+package setani.generic;
 
 /**
  *
  * @author user
  */
-public class datapanen {
+public class DataPanen {
      private int id_hasilpanen, id_akun, berat_komoditas_panen,harga_jual_perkilo;
      private String nama_komoditas_panen, tipe_komoditas_panen,tanggal_panen;
 
-    public datapanen(int id_hasilpanen, int id_akun, int berat_komoditas_panen, String nama_komoditas_panen, String tipe_komoditas_panen, int harga_jual_perkilo, String tanggal_panen) {
+    public DataPanen(int id_hasilpanen, int id_akun, int berat_komoditas_panen, String nama_komoditas_panen, String tipe_komoditas_panen, int harga_jual_perkilo, String tanggal_panen) {
         this.id_hasilpanen = id_hasilpanen;
         this.id_akun = id_akun;
         this.berat_komoditas_panen = berat_komoditas_panen;
@@ -23,7 +23,7 @@ public class datapanen {
         this.tanggal_panen = tanggal_panen;
     }
     
-    public datapanen(){
+    public DataPanen(){
         
     }
 
