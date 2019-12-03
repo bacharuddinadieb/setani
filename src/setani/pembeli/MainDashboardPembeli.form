@@ -499,6 +499,9 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JTextField" name="tfCari">
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="tfCariKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblIconCariAtas">
           <Properties>

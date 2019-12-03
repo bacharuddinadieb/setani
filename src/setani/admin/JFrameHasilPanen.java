@@ -5,6 +5,17 @@
  */
 package setani.admin;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import setani.generic.DataAkun;
+import setani.generic.DataPanen;
+import setani.generic.DataTipeHasilPanen;
+import setani.koneksi.koneksi;
+
 /**
  *
  * @author TheBrokenMaster
@@ -14,8 +25,102 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
     /**
      * Creates new form JFrameTambahHasilPanen
      */
-    public JFrameHasilPanen() {
+    private Connection conn;
+    DataAkun informasilogin;
+    MainDashboardAdmin mainDashboardAdmin;
+    DataPanen dataPanen;
+
+    public JFrameHasilPanen(MainDashboardAdmin mda, DataAkun da) {
         initComponents();
+        informasilogin = da;
+        mainDashboardAdmin = mda;
+        conn = koneksi.bukaKoneksi();
+        loadDataTipeHasilPanen();
+    }
+
+    public JFrameHasilPanen(MainDashboardAdmin mda, DataAkun da, DataPanen dp) {
+        initComponents();
+        informasilogin = da;
+        mainDashboardAdmin = mda;
+        dataPanen = dp;
+        jButton1.setText("Perbarui Data");
+        conn = koneksi.bukaKoneksi();
+        loadDataTipeHasilPanen();
+
+        jTextField1.setText(dp.getNama_komoditas_panen());
+        jTextField3.setText(Integer.toString(dp.getBerat_komoditas_panen()));
+        jTextField4.setText(Integer.toString(dp.getHarga_jual_perkilo()));
+    }
+
+    public void loadDataTipeHasilPanen() {
+        if (conn != null) {
+            String kueri = "SELECT * FROM tb_tipe_hasil_panen;";
+            int i = 0;
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int idTipeHasilPanen = rs.getInt("id_tipe_hasil_panen");
+                    String TipeHasilPanen = rs.getString("tipe_komoditas_panen");
+                    comboTipeHasilPanen.addItem(idTipeHasilPanen + "-" + TipeHasilPanen);
+                    if (jButton1.getText().equals("Perbarui Data")) {
+                        if (dataPanen.getTipe_komoditas_panen().equals(TipeHasilPanen)) {
+                            comboTipeHasilPanen.setSelectedIndex(i);
+                        }
+                    }
+                    i++;
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
+
+    private void tambahData(String nama, int berat, int harga, int idTipe, int idAkun) {
+        if (conn != null) {
+            try {
+                String kueri = "INSERT INTO tb_hasil_panen(nama_komoditas_panen, berat_komoditas_panen, harga_jual_kg, id_tipe_hasil_panen, id_akun) VALUES (?,?,?,?,?)";
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, nama);
+                ps.setInt(2, berat);
+                ps.setInt(3, harga);
+                ps.setInt(4, idTipe);
+                ps.setInt(5, idAkun);
+                int hasil = ps.executeUpdate();
+                if (hasil > 0) {
+                    JOptionPane.showMessageDialog(this, "Input Berhasil");
+                    setVisible(false);
+                    dispose();
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
+
+    void updatepanen(String nama, int berat, int harga, int idTipe, int idAkun, int idHasilPanen) {
+        if (conn != null) {
+            String kueri = "UPDATE tb_hasil_panen SET nama_komoditas_panen = ?, berat_komoditas_panen = ?, harga_jual_kg = ?, id_tipe_hasil_panen = ?, id_akun = ? WHERE id_hasil_panen = ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, nama);
+                ps.setInt(2, berat);
+                ps.setInt(3, harga);
+                ps.setInt(4, idTipe);
+                ps.setInt(5, idAkun);
+                ps.setInt(6, idHasilPanen);
+                int hasil = ps.executeUpdate();
+                if (hasil > 0) {
+                    JOptionPane.showMessageDialog(this, "Input Berhasil");
+                    setVisible(false);
+                    dispose();
+                }
+            } catch (SQLException ex) {
+                System.err.println(ex);
+            }
+        }
     }
 
     /**
@@ -31,12 +136,14 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        comboTipeHasilPanen = new javax.swing.JComboBox<>();
+        jLabel5 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -57,8 +164,6 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
 
         jTextField1.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setText("Tipe Hasil Panen");
 
@@ -71,6 +176,11 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jButton1.setText("Tambah Data");
         jButton1.setPreferredSize(new java.awt.Dimension(125, 30));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(223, 32, 34));
         jButton2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -81,6 +191,13 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
+
+        comboTipeHasilPanen.setMaximumRowCount(10);
+
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel5.setText("Harga per Kilo");
+
+        jTextField4.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -93,18 +210,20 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextField1)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(comboTipeHasilPanen, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addGap(31, 31, 31))
         );
@@ -120,16 +239,20 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(comboTipeHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -151,6 +274,21 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
         setVisible(false);
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        System.out.println(comboTipeHasilPanen.getSelectedItem());
+        int berat = Integer.parseInt(jTextField3.getText());
+        int harga = Integer.parseInt(jTextField4.getText());
+        String[] id = comboTipeHasilPanen.getSelectedItem().toString().split("-");
+        if (jButton1.getText().equals("Tambah Data")) {
+            tambahData(jTextField1.getText(), berat, harga, Integer.parseInt(id[0]), informasilogin.getIdAkun());
+        } else {
+            updatepanen(jTextField1.getText(), berat, harga, Integer.parseInt(id[0]), informasilogin.getIdAkun(), dataPanen.getId_hasilpanen());
+        }
+        mainDashboardAdmin.loadpanen();
+        mainDashboardAdmin.tampilDataPanen();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -189,15 +327,17 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> comboTipeHasilPanen;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 }

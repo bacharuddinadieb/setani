@@ -8,6 +8,7 @@ package setani.admin;
 import com.mysql.jdbc.Connection;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,6 +22,9 @@ import setani.koneksi.koneksi;
 import setani.generic.DataAkun;
 import setani.pembeli.MainDashboardPembeli;
 import setani.generic.DataPanen;
+import setani.generic.DataTipeHasilPanen;
+import setani.generic.DataTransaksi;
+import setani.login.Login1;
 
 /**
  *
@@ -33,27 +37,42 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
      */
     private final CardLayout cardLayout;
     DataAkun informasilogin;
-    private ArrayList<Akun> arrAkun = new ArrayList<>();
-     ArrayList<DataPanen> daftarpanen = new ArrayList<>();
+    private ArrayList<DataAkun> arrAkun = new ArrayList<>();
+    ArrayList<DataPanen> daftarpanen = new ArrayList<>();
+    ArrayList<DataTipeHasilPanen> daftarTipeHasilPanen = new ArrayList<>();
+    ArrayList<DataTransaksi> daftarTransaksi = new ArrayList<>();
     private Connection conn;
     private DefaultTableModel modelAkun = new DefaultTableModel();
-    private DefaultTableModel model = new DefaultTableModel();
+    private DefaultTableModel modelHasilPanen = new DefaultTableModel();
+    private DefaultTableModel modelTipeHasilPanen = new DefaultTableModel();
+    private DefaultTableModel modelTransaksiHistory = new DefaultTableModel();
+    int cardPosition = 0;
 
-    
     public MainDashboardAdmin(DataAkun login) {
         initComponents();
         lblIconCariAtas.setVisible(false);
         tfCari.setVisible(false);
-        cardLayout = (CardLayout)(panCard.getLayout());
+        cardLayout = (CardLayout) (panCard.getLayout());
         informasilogin = login;
         conn = koneksi.bukaKoneksi();
-        jtHasilPanen.setModel(model);
+        jtHasilPanen.setModel(modelHasilPanen);
+        jtTransaksi.setModel(modelTransaksiHistory);
+        jtHasilPanen1.setModel(modelTipeHasilPanen);
         loadkolom();
         loadKolomAkun();
+        loadDataAkun();
         loadpanen();
         tampilDataPanen();
+        loadTransaksiHistory();
+        tampilDataTransaksiHistory();
+        loadTipeHasilPanen();
+        tampilDataTipeHasilPanen();
+
+        jLabel16.setText("Selamat datang, " + informasilogin.getNama());
+        jLabel28.setText(Integer.toString(daftarpanen.size()) + " Komoditas Panen");
+        jLabel33.setText(Integer.toString(daftarTransaksi.size()) + " Transaksi");
     }
-    
+
     private void loadKolomAkun() {
         modelAkun.addColumn("No");
         modelAkun.addColumn("Username");
@@ -61,10 +80,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         modelAkun.addColumn("Nomer Telepon");
         modelAkun.addColumn("Tipe Akun");
         modelAkun.addColumn("Status");
+        modelTransaksiHistory.addColumn("Id Transaksi");
+        modelTransaksiHistory.addColumn("Tanggal Transaksi");
+        modelTransaksiHistory.addColumn("Pembeli");
+        modelTipeHasilPanen.addColumn("No");
+        modelTipeHasilPanen.addColumn("Tipe Hasil Panen");
     }
-    
-    public void loadDataAkun(){
-         if (conn != null) {
+
+    public void loadDataAkun() {
+        if (conn != null) {
             arrAkun = new ArrayList<>();
             String kueri = "SELECT * FROM tb_akun;";
             try {
@@ -79,7 +103,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                     String alamat = rs.getString("alamat");
                     int role = rs.getInt("role");
                     int status = rs.getInt("status");
-                    Akun akun = new Akun(idAkun, role, status, username, password, nama, nomerTelepon, alamat);
+                    DataAkun akun = new DataAkun(idAkun, role, status, nama, username, alamat, nomerTelepon);
                     arrAkun.add(akun);
                 }
                 rs.close();
@@ -89,30 +113,119 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             }
         }
     }
-    
-    public void tampilDataAkun(){
-        loadDataAkun();
+
+    public void loadDataAkunCari(String keyword) {
+        if (conn != null) {
+            arrAkun = new ArrayList<>();
+            String kueri = "SELECT * FROM tb_akun WHERE username LIKE ? OR nama LIKE ?;";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + keyword + "%");
+                ps.setString(2, "%" + keyword + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int idAkun = rs.getInt("id_akun");
+                    String username = rs.getString("username");
+                    String password = rs.getString("password");
+                    String nama = rs.getString("nama");
+                    String nomerTelepon = rs.getString("nomer_telepon");
+                    String alamat = rs.getString("alamat");
+                    int role = rs.getInt("role");
+                    int status = rs.getInt("status");
+                    DataAkun akun = new DataAkun(idAkun, role, status, nama, username, alamat, nomerTelepon);
+                    arrAkun.add(akun);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
+
+    private void loadTransaksiHistory() {
+        if (conn != null) {
+            daftarTransaksi.clear();
+            String kueri = "SELECT * FROM tb_transaksi INNER JOIN tb_akun ON tb_akun.id_akun = tb_transaksi.id_pembeli";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int idTransaksi = rs.getInt("id_transaksi");
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    int idPembeli = rs.getInt("id_pembeli");
+                    String namaPembeli = rs.getString("nama");
+                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli);
+                    daftarTransaksi.add(dataTransaksi);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void loadTransaksiHistoryCari(String transaksi) {
+        if (conn != null) {
+            daftarTransaksi.clear();
+            String kueri = "SELECT * FROM tb_transaksi INNER JOIN tb_akun ON tb_akun.id_akun = tb_transaksi.id_pembeli WHERE tb_transaksi.id_transaksi LIKE ? OR tb_transaksi.tanggal_transaksi LIKE ? OR nama LIKE ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + transaksi + "%");
+                ps.setString(2, "%" + transaksi + "%");
+                ps.setString(3, "%" + transaksi + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int idTransaksi = rs.getInt("id_transaksi");
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    int idPembeli = rs.getInt("id_pembeli");
+                    String namaPembeli = rs.getString("nama");
+                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli);
+                    daftarTransaksi.add(dataTransaksi);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void tampilDataAkun() {
         modelAkun.setRowCount(0);
         int nomer = 1;
-        for (Akun a : arrAkun) {
+        for (DataAkun a : arrAkun) {
             modelAkun.addRow(new Object[]{nomer, a.getUsername(), a.getNama(), a.getNomerTelepon(), a.getRole(), a.getStatus()});
             nomer++;
         }
     }
-    
-    //data Panen
-    private void loadkolom() {
-        model.addColumn("nama_komoditas_panen");
-        model.addColumn("tipe_komoditas_panen");
-        model.addColumn("berat_komoditas_panen");
-        model.addColumn("harga_jual_kg");
-        model.addColumn("tanggal_panen");
-   
+
+    void tampilDataTransaksiHistory() {
+        modelTransaksiHistory.setRowCount(0);
+        for (DataTransaksi b : daftarTransaksi) {
+            modelTransaksiHistory.addRow(new Object[]{
+                b.getIdTransaksi(),
+                b.getTanggalTransaksi(),
+                b.getNamaPembeli()
+            });
+        }
     }
 
-    private void loadpanen() {
+    //data Panen
+    private void loadkolom() {
+        modelHasilPanen.addColumn("nama_komoditas_panen");
+        modelHasilPanen.addColumn("tipe_komoditas_panen");
+        modelHasilPanen.addColumn("berat_komoditas_panen");
+        modelHasilPanen.addColumn("harga_jual_kg");
+        modelHasilPanen.addColumn("tanggal_panen");
+
+    }
+
+    void loadpanen() {
         if (conn != null) {
-            String kueri = "SELECT * FROM tb_hasil_panen";
+            daftarpanen.clear();
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen";
             try {
                 PreparedStatement ps = conn.prepareStatement(kueri);
                 ResultSet rs = ps.executeQuery();
@@ -135,10 +248,38 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         }
     }
 
+    void loadpanenCari(String keyword) {
+        if (conn != null) {
+            daftarpanen.clear();
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen WHERE nama_komoditas_panen LIKE ? OR tipe_komoditas_panen LIKE ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + keyword + "%");
+                ps.setString(2, "%" + keyword + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_hasilpanen = rs.getInt("id_hasil_panen");
+                    int id_akun = rs.getInt("id_akun");
+                    String nama_komoditas_panen = rs.getString("nama_komoditas_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
+                    int harga_jual_perkilo = rs.getInt("harga_jual_kg");
+                    String tanggal_panen = rs.getString("tanggal_panen");
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    daftarpanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     void tampilDataPanen() {
-        model.setRowCount(0);
+        modelHasilPanen.setRowCount(0);
         for (DataPanen b : daftarpanen) {
-            model.addRow(new Object[]{
+            modelHasilPanen.addRow(new Object[]{
                 b.getNama_komoditas_panen(),
                 b.getTipe_komoditas_panen(),
                 b.getBerat_komoditas_panen(),
@@ -146,6 +287,62 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 b.getTanggal_panen()
 
             });
+        }
+    }
+
+    void loadTipeHasilPanen() {
+        if (conn != null) {
+            daftarTipeHasilPanen.clear();
+            String kueri = "SELECT * FROM tb_tipe_hasil_panen";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_tipe = rs.getInt("id_tipe_hasil_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    DataTipeHasilPanen data = new DataTipeHasilPanen(id_tipe, tipe_komoditas_panen);
+                    daftarTipeHasilPanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    void loadTipeHasilPanenCari(String keyword) {
+        if (conn != null) {
+            daftarTipeHasilPanen.clear();
+            String kueri = "SELECT * FROM tb_tipe_hasil_panen WHERE tipe_komoditas_panen LIKE ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + keyword + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_tipe = rs.getInt("id_tipe_hasil_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    DataTipeHasilPanen data = new DataTipeHasilPanen(id_tipe, tipe_komoditas_panen);
+                    daftarTipeHasilPanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    void tampilDataTipeHasilPanen() {
+        modelTipeHasilPanen.setRowCount(0);
+        int i = 1;
+        for (DataTipeHasilPanen b : daftarTipeHasilPanen) {
+            modelTipeHasilPanen.addRow(new Object[]{
+                i,
+                b.getTipeHasilPanen()
+
+            });
+            i++;
         }
     }
 
@@ -168,17 +365,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 sideButtonIndikator[i].setOpaque(false);
             }
         }
-        
+
         if (jPanel.equals(sideButtonElem[0]) || jPanel.equals(sideButtonElem[5])) {
             lblIconCariAtas.setVisible(false);
             tfCari.setVisible(false);
-        }else{
+        } else {
             lblIconCariAtas.setVisible(true);
             tfCari.setVisible(true);
         }
-    }  
-    
-
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -262,15 +457,22 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel47 = new javax.swing.JLabel();
         panCardHasilPanen = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
-        jLabel22 = new javax.swing.JLabel();
-        btnTambahHasilPanen = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jtHasilPanen = new javax.swing.JTable();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        jtHasilPanen1 = new javax.swing.JTable();
+        btnTambahHasilPanen1 = new javax.swing.JButton();
+        btnTambahHasilPanen = new javax.swing.JButton();
+        jLabel54 = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel55 = new javax.swing.JLabel();
+        btnTambahHasilPanen2 = new javax.swing.JButton();
+        btnTambahHasilPanen3 = new javax.swing.JButton();
         panCardTransaksi = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         jScrollPane8 = new javax.swing.JScrollPane();
-        jTable8 = new javax.swing.JTable();
+        jtTransaksi = new javax.swing.JTable();
         panCardAkun = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jLabel24 = new javax.swing.JLabel();
@@ -676,6 +878,12 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(48, 63, 159));
         jPanel2.setMinimumSize(new java.awt.Dimension(290, 42));
 
+        tfCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfCariKeyReleased(evt);
+            }
+        });
+
         lblIconCariAtas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_search_20px.png"))); // NOI18N
 
         lblIconCariAtas1.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -858,7 +1066,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         jLabel39.setText("75 Orang");
 
         jLabel38.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
-        jLabel38.setText("Pembeli");
+        jLabel38.setText("Akun");
 
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
@@ -871,7 +1079,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel38)
                     .addComponent(jLabel39))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1042,39 +1250,15 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
         jPanel9.setBackground(new java.awt.Color(249, 249, 249));
 
-        jLabel22.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
-        jLabel22.setText("Hasil Panen");
-
-        btnTambahHasilPanen.setBackground(new java.awt.Color(1, 87, 155));
-        btnTambahHasilPanen.setForeground(new java.awt.Color(246, 246, 246));
-        btnTambahHasilPanen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
-        btnTambahHasilPanen.setText("Tambah Hasil Panen");
-        btnTambahHasilPanen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        btnTambahHasilPanen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTambahHasilPanenActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jLabel22)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnTambahHasilPanen)
-                .addGap(30, 30, 30))
+            .addGap(0, 352, Short.MAX_VALUE)
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel22)
-                    .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(18, Short.MAX_VALUE))
+            .addGap(0, 81, Short.MAX_VALUE)
         );
 
         jtHasilPanen.setModel(new javax.swing.table.DefaultTableModel(
@@ -1090,23 +1274,126 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         ));
         jScrollPane7.setViewportView(jtHasilPanen);
 
+        jtHasilPanen1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane11.setViewportView(jtHasilPanen1);
+
+        btnTambahHasilPanen1.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen1.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen1.setText("Tambah Tipe Hasil Panen");
+        btnTambahHasilPanen1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanen1ActionPerformed(evt);
+            }
+        });
+
+        btnTambahHasilPanen.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen.setText("Tambah Hasil Panen");
+        btnTambahHasilPanen.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanenActionPerformed(evt);
+            }
+        });
+
+        jLabel54.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel54.setText("Daftar Hasil Panen");
+
+        jLabel22.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
+        jLabel22.setText("Hasil Panen");
+
+        jLabel55.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel55.setText("Daftar Tipe Hasil Panen");
+
+        btnTambahHasilPanen2.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen2.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen2.setText("Edit");
+        btnTambahHasilPanen2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanen2ActionPerformed(evt);
+            }
+        });
+
+        btnTambahHasilPanen3.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen3.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen3.setText("Edit");
+        btnTambahHasilPanen3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanen3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panCardHasilPanenLayout = new javax.swing.GroupLayout(panCardHasilPanen);
         panCardHasilPanen.setLayout(panCardHasilPanenLayout);
         panCardHasilPanenLayout.setHorizontalGroup(
             panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(panCardHasilPanenLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCardHasilPanenLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
+                .addGroup(panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panCardHasilPanenLayout.createSequentialGroup()
+                        .addComponent(jLabel55)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnTambahHasilPanen3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTambahHasilPanen1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panCardHasilPanenLayout.createSequentialGroup()
+                        .addGroup(panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel54)
+                            .addComponent(jLabel22))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTambahHasilPanen2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnTambahHasilPanen))
+                    .addComponent(jScrollPane7)
+                    .addComponent(jScrollPane11, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(30, 30, 30))
         );
         panCardHasilPanenLayout.setVerticalGroup(
             panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCardHasilPanenLayout.createSequentialGroup()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panCardHasilPanenLayout.createSequentialGroup()
+                        .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCardHasilPanenLayout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnTambahHasilPanen2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(276, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panCardHasilPanenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnTambahHasilPanen1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnTambahHasilPanen3, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel55))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23))
         );
 
         panCard.add(panCardHasilPanen, "panCardHasilPanen");
@@ -1135,7 +1422,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        jTable8.setModel(new javax.swing.table.DefaultTableModel(
+        jtTransaksi.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -1146,7 +1433,12 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane8.setViewportView(jTable8);
+        jtTransaksi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtTransaksiMouseClicked(evt);
+            }
+        });
+        jScrollPane8.setViewportView(jtTransaksi);
 
         javax.swing.GroupLayout panCardTransaksiLayout = new javax.swing.GroupLayout(panCardTransaksi);
         panCardTransaksi.setLayout(panCardTransaksiLayout);
@@ -1163,7 +1455,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardTransaksiLayout.createSequentialGroup()
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
@@ -1195,16 +1487,17 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addComponent(jLabel24)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnTambahAkun)
-                .addGap(30, 30, 30))
+                .addGap(32, 32, 32))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel24)
-                    .addComponent(btnTambahAkun, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel24)
                 .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnTambahAkun, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTAkun.setAutoCreateRowSorter(true);
@@ -1244,7 +1537,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardAkunLayout.createSequentialGroup()
                 .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
@@ -1311,7 +1604,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
             .addGroup(panCardCetakLaporanLayout.createSequentialGroup()
                 .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
@@ -1479,7 +1772,7 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnBatalEditDataPengaturan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEditDataPengaturan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(26, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panCardPengaturanLayout = new javax.swing.GroupLayout(panCardPengaturan);
@@ -1520,11 +1813,13 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private void sideBtnHasilPanenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnHasilPanenMouseClicked
         gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
         cardLayout.show(panCard, "panCardHasilPanen");
+        cardPosition = 1;
     }//GEN-LAST:event_sideBtnHasilPanenMouseClicked
 
     private void sideBtnTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnTransaksiMouseClicked
         gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
         cardLayout.show(panCard, "panCardTransaksi");
+        cardPosition = 2;
     }//GEN-LAST:event_sideBtnTransaksiMouseClicked
 
     private void sideBtnAkunMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnAkunMouseClicked
@@ -1532,11 +1827,13 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
         cardLayout.show(panCard, "panCardAkun");
         jTAkun.setModel(modelAkun);
         tampilDataAkun();
+        cardPosition = 3;
     }//GEN-LAST:event_sideBtnAkunMouseClicked
 
     private void sideBtnCetakLaporanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnCetakLaporanMouseClicked
         gantiWarnaSidePanel(sideBtnCetakLaporan, panIndikatorCetakLaporan);
         cardLayout.show(panCard, "panCardCetakLaporan");
+        cardPosition = 4;
     }//GEN-LAST:event_sideBtnCetakLaporanMouseClicked
 
     private void sideBtnPengaturanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnPengaturanMouseClicked
@@ -1545,7 +1842,11 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     }//GEN-LAST:event_sideBtnPengaturanMouseClicked
 
     private void sideBtnKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnKeluarMouseClicked
-
+        dispose();
+        Login1 login = new Login1();
+        login.setLocationRelativeTo(null);
+        login.setTitle("Login");
+        login.setVisible(true);
     }//GEN-LAST:event_sideBtnKeluarMouseClicked
 
     private void sideBtnBerandaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnBerandaMouseClicked
@@ -1555,22 +1856,78 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
 
     private void btnTambahHasilPanenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanenActionPerformed
         // TODO add your handling code here:
-        JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen();
+        JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen(this, informasilogin);
         jFrameHasilPanen.setLocationRelativeTo(null);
         jFrameHasilPanen.setVisible(true);
     }//GEN-LAST:event_btnTambahHasilPanenActionPerformed
 
     private void btnTambahAkunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahAkunActionPerformed
         // TODO add your handling code here:
-        JFrameAkun jFrameAkun = new JFrameAkun();
+        JFrameAkun jFrameAkun = new JFrameAkun(this);
         jFrameAkun.setLocationRelativeTo(null);
         jFrameAkun.setVisible(true);
-        
+
     }//GEN-LAST:event_btnTambahAkunActionPerformed
 
     private void btnEditDataPengaturanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDataPengaturanActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnEditDataPengaturanActionPerformed
+
+    private void btnTambahHasilPanen1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanen1ActionPerformed
+        // TODO add your handling code here:
+        JFrameTipeHasilPanen frameTipeHasilPanen = new JFrameTipeHasilPanen(this);
+        frameTipeHasilPanen.setLocationRelativeTo(null);
+        frameTipeHasilPanen.setVisible(true);
+    }//GEN-LAST:event_btnTambahHasilPanen1ActionPerformed
+
+    private void btnTambahHasilPanen2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanen2ActionPerformed
+        // TODO add your handling code here:
+        int baris = jtHasilPanen.getSelectedRow();
+        if (baris >= 0) {
+            JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen(this, informasilogin, daftarpanen.get(baris));
+            jFrameHasilPanen.setLocationRelativeTo(null);
+            jFrameHasilPanen.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Silahkan pilih Daftar Hasil Panen", "Pesan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnTambahHasilPanen2ActionPerformed
+
+    private void btnTambahHasilPanen3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanen3ActionPerformed
+        // TODO add your handling code here:
+        int baris = jtHasilPanen1.getSelectedRow();
+        if (baris >= 0) {
+            JFrameTipeHasilPanen jFrameTipeHasilPanen = new JFrameTipeHasilPanen(this, daftarTipeHasilPanen.get(baris).getTipeHasilPanen(), daftarTipeHasilPanen.get(baris).getIdTipeHasilPanen());
+            jFrameTipeHasilPanen.setLocationRelativeTo(null);
+            jFrameTipeHasilPanen.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Silahkan pilih Daftar Tipe Hasil Panen", "Pesan", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }//GEN-LAST:event_btnTambahHasilPanen3ActionPerformed
+
+    private void jtTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtTransaksiMouseClicked
+        // TODO add your handling code here:
+        int baris = jtTransaksi.getSelectedRow();
+        DetailTransaksi dt = new DetailTransaksi(daftarTransaksi.get(baris));
+        dt.setVisible(true);
+    }//GEN-LAST:event_jtTransaksiMouseClicked
+
+    private void tfCariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfCariKeyReleased
+        // TODO add your handling code here:
+        String keyword = tfCari.getText();
+        if (cardPosition == 1) {
+            loadTipeHasilPanenCari(keyword);
+            loadpanenCari(keyword);
+            tampilDataPanen();
+            tampilDataTipeHasilPanen();
+        } else if (cardPosition == 2) {
+            loadTransaksiHistoryCari(keyword);
+            tampilDataTransaksiHistory();
+        } else if (cardPosition == 3) {
+            loadDataAkunCari(keyword);
+            tampilDataAkun();
+        }
+    }//GEN-LAST:event_tfCariKeyReleased
 
     /**
      * @param args the command line arguments
@@ -1615,6 +1972,9 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JButton btnEditDataPengaturan;
     private javax.swing.JButton btnTambahAkun;
     private javax.swing.JButton btnTambahHasilPanen;
+    private javax.swing.JButton btnTambahHasilPanen1;
+    private javax.swing.JButton btnTambahHasilPanen2;
+    private javax.swing.JButton btnTambahHasilPanen3;
     private javax.swing.JButton jButton10;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1665,6 +2025,8 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel52;
     private javax.swing.JLabel jLabel53;
+    private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel55;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -1691,13 +2053,13 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JScrollPane jScrollPane9;
     private javax.swing.JTable jTAkun;
     private javax.swing.JTable jTable10;
-    private javax.swing.JTable jTable8;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
@@ -1705,6 +2067,8 @@ public class MainDashboardAdmin extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTable jtHasilPanen;
+    private javax.swing.JTable jtHasilPanen1;
+    private javax.swing.JTable jtTransaksi;
     private javax.swing.JLabel lblIconCariAtas;
     private javax.swing.JLabel lblIconCariAtas1;
     private javax.swing.JPanel panCard;

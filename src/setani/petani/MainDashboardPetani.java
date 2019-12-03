@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
 import setani.generic.DataAkun;
+
 /**
  *
  * @author matohdev
@@ -32,67 +33,98 @@ public class MainDashboardPetani extends javax.swing.JFrame {
      */
     private final CardLayout cardLayout;
     DataAkun informasilogin;
+
     public MainDashboardPetani(DataAkun login) {
         initComponents();
-        cardLayout = (CardLayout)(panCard.getLayout());
-        conn=koneksi.bukaKoneksi();
+        cardLayout = (CardLayout) (panCard.getLayout());
+        conn = koneksi.bukaKoneksi();
         jtHasilPanen.setModel(model);
         loadkolom();
         loadpanen();
         tampilDataPanen();
         informasilogin = login;
     }
-    
-    private DefaultTableModel model=new DefaultTableModel();
+
+    private DefaultTableModel model = new DefaultTableModel();
     private Connection conn;
-    private ArrayList<DataPanen> daftarpanen;
-    private void loadkolom(){
+    private ArrayList<DataPanen> daftarpanen = new ArrayList<>();
+
+    private void loadkolom() {
         model.addColumn("nama_komoditas_panen");
         model.addColumn("tipe_komoditas_panen");
         model.addColumn("berat_komoditas_panen");
         model.addColumn("harga_jual_kg");
         model.addColumn("tanggal_panen");
     }
-    
-    private void loadpanen(){
-        if(conn!=null){
-            daftarpanen=new ArrayList<>();
-            String kueri="SELECT * FROM tb_hasil_panen";
-            try{
+
+    void loadpanen() {
+        if (conn != null) {
+            daftarpanen.clear();
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen";
+            try {
                 PreparedStatement ps = conn.prepareStatement(kueri);
-                    ResultSet rs = ps.executeQuery();
-                    while(rs.next()){
-                        int id_hasilpanen = rs.getInt("id_hasil_panen");
-                        int id_akun = rs.getInt("id_akun");
-                        String nama_komoditas_panen=rs.getString("nama_komoditas_panen");
-                        String tipe_komoditas_panen=rs.getString("tipe_komoditas_panen");
-                        int berat_komoditas_panen=rs.getInt("berat_komoditas_panen");
-                        int harga_jual_perkilo=rs.getInt("harga_jual_kg");
-                        String tanggal_panen=rs.getString("tanggal_panen");
-                        DataPanen data=new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
-                        daftarpanen.add(data);
-                    }
-                    rs.close();
-                    ps.close();
-            }
-             catch (SQLException ex){
-                Logger.getLogger(MainDashboardPetani.class.getName()).log(Level.SEVERE, null, ex);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_hasilpanen = rs.getInt("id_hasil_panen");
+                    int id_akun = rs.getInt("id_akun");
+                    String nama_komoditas_panen = rs.getString("nama_komoditas_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
+                    int harga_jual_perkilo = rs.getInt("harga_jual_kg");
+                    String tanggal_panen = rs.getString("tanggal_panen");
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    daftarpanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                System.err.println(ex);
             }
         }
     }
-    public void tampilDataPanen(){
+
+    void loadpanenCari(String keyword) {
+        if (conn != null) {
+            daftarpanen.clear();
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen WHERE nama_komoditas_panen LIKE ? OR tipe_komoditas_panen LIKE ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + keyword + "%");
+                ps.setString(2, "%" + keyword + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_hasilpanen = rs.getInt("id_hasil_panen");
+                    int id_akun = rs.getInt("id_akun");
+                    String nama_komoditas_panen = rs.getString("nama_komoditas_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
+                    int harga_jual_perkilo = rs.getInt("harga_jual_kg");
+                    String tanggal_panen = rs.getString("tanggal_panen");
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    daftarpanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                System.err.println(ex);
+            }
+        }
+    }
+
+    void tampilDataPanen() {
         model.setRowCount(0);
-        for(DataPanen b:daftarpanen){
+        for (DataPanen b : daftarpanen) {
             model.addRow(new Object[]{
                 b.getNama_komoditas_panen(),
                 b.getTipe_komoditas_panen(),
                 b.getBerat_komoditas_panen(),
                 b.getHarga_jual_perkilo(),
                 b.getTanggal_panen()
-            
+
             });
         }
     }
+
     private void gantiWarnaSidePanel(JPanel jPanel, JPanel panelIndikator) {
         JPanel[] sideButtonElem = {sideBtnBeranda, sideBtnHasilPanen, sideBtnTransaksi, sideBtnPengaturan};
         JPanel[] sideButtonIndikator = {panIndikatorBeranda, panIndikatorHasilPanen, panIndikatorTransaksi, panIndikatorPengaturan};
@@ -112,17 +144,15 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                 sideButtonIndikator[i].setOpaque(false);
             }
         }
-        
+
         if (jPanel.equals(sideButtonElem[0])) {
             lblIconCariAtas.setVisible(false);
             tfCari.setVisible(false);
-        }else{
+        } else {
             lblIconCariAtas.setVisible(true);
             tfCari.setVisible(true);
         }
-    }  
-    
-
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -1086,7 +1116,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
 
     private void btnTambahHasilPanenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanenActionPerformed
         // TODO add your handling code here:
-        JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen(informasilogin);
+        JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen(this, informasilogin);
         jFrameHasilPanen.setLocationRelativeTo(null);
         jFrameHasilPanen.setVisible(true);
     }//GEN-LAST:event_btnTambahHasilPanenActionPerformed

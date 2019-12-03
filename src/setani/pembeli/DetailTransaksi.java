@@ -13,9 +13,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import setani.generic.DataAkun;
 import setani.generic.DataPanen;
 
@@ -35,9 +44,11 @@ public class DetailTransaksi extends javax.swing.JFrame {
     ArrayList<DataPanen> daftarKomoditasDijual = new ArrayList<>();
     private DefaultTableModel modelKomoditasDijual = new DefaultTableModel();
     private int totalHarga = 0;
-//    
-//    JasperReport jr;
-//    JasperPrint jp;
+    
+    JasperReport jr;
+    JasperPrint jp;
+    JasperDesign jd;
+    Map param = new HashMap();
 
     public DetailTransaksi(DataTransaksi dt) {
         initComponents();
@@ -86,7 +97,7 @@ public class DetailTransaksi extends javax.swing.JFrame {
     private void loadDataKomoditasDijual() {
         if (conn != null) {
             daftarKomoditasDijual.clear();
-            String kueri = "SELECT * FROM tb_komoditas_dijual INNER JOIN tb_hasil_panen ON tb_hasil_panen.id_hasil_panen = tb_komoditas_dijual.id_hasil_panen WHERE id_transaksi = '" + dataTransaksi.getIdTransaksi() + "'";
+            String kueri = "SELECT * FROM tb_komoditas_dijual INNER JOIN tb_hasil_panen ON tb_hasil_panen.id_hasil_panen = tb_komoditas_dijual.id_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen WHERE id_transaksi = '" + dataTransaksi.getIdTransaksi() + "'";
             try {
                 PreparedStatement ps = conn.prepareStatement(kueri);
                 ResultSet rs = ps.executeQuery();
@@ -152,7 +163,7 @@ public class DetailTransaksi extends javax.swing.JFrame {
         inpTotalHarga = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setType(java.awt.Window.Type.UTILITY);
 
         jPanel1.setBackground(new java.awt.Color(249, 249, 249));
@@ -354,8 +365,11 @@ public class DetailTransaksi extends javax.swing.JFrame {
     private void btnCetakNotaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCetakNotaActionPerformed
         // TODO add your handling code here:
         try {
-            File report = new File("reportDetailTransaksiPembeli.jrxml");
+            param.put("idTransaksi", dataTransaksi.getIdTransaksi());
+            jp = JasperFillManager.fillReport(getClass().getResourceAsStream("reportDetailTransaksiPembeli.jasper"), param, conn);
+            JasperViewer.viewReport(jp, false);
         } catch (Exception e) {
+            System.err.println(e);
         }
         
     }//GEN-LAST:event_btnCetakNotaActionPerformed

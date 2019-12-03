@@ -27,6 +27,7 @@ public class Transaksi extends javax.swing.JFrame {
     int idHasilPanen, harga, idPenjual, baris, berat;
     String namaKomoditas;
     MainDashboardPembeli mdp;
+    private Connection conn;
 
     public Transaksi(MainDashboardPembeli mainDashboardPembeli, DataAkun login, int barisKe, DataPanen dataPanen) {
         initComponents();
@@ -45,11 +46,11 @@ public class Transaksi extends javax.swing.JFrame {
         baris = barisKe;
     }
 
-    private Connection conn;
+    
 
     public void loadpanen() {
         if (conn != null) {
-            String kueri = "SELECT * FROM tb_hasil_panen WHERE id_hasil_panen = '" + idHasilPanen + "'";
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen INNER JOIN tb_akun ON tb_akun.id_akun = tb_hasil_panen.id_akun WHERE id_hasil_panen = '" + idHasilPanen + "'";
             try {
                 java.sql.PreparedStatement ps = conn.prepareStatement(kueri);
                 ResultSet rs = ps.executeQuery();
@@ -61,7 +62,8 @@ public class Transaksi extends javax.swing.JFrame {
                     int berat_komoditas_panen = Integer.parseInt(jumlahkg.getText());
                     int harga_jual_perkilo = rs.getInt("harga_jual_kg");
                     String tanggal_panen = rs.getString("tanggal_panen");
-                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    String petani = rs.getString("nama");
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen, petani);
                     mdp.daftarPanenMauDiBeli.add(data);
                 }
                 rs.close();

@@ -11,7 +11,7 @@ package setani.generic;
  */
 public class DataPanen {
      private int id_hasilpanen, id_akun, berat_komoditas_panen,harga_jual_perkilo;
-     private String nama_komoditas_panen, tipe_komoditas_panen,tanggal_panen;
+     private String nama_komoditas_panen, tipe_komoditas_panen,tanggal_panen, petani;
 
     public DataPanen(int id_hasilpanen, int id_akun, int berat_komoditas_panen, String nama_komoditas_panen, String tipe_komoditas_panen, int harga_jual_perkilo, String tanggal_panen) {
         this.id_hasilpanen = id_hasilpanen;
@@ -23,9 +23,30 @@ public class DataPanen {
         this.tanggal_panen = tanggal_panen;
     }
     
+    public DataPanen(int id_hasilpanen, int id_akun, int berat_komoditas_panen, String nama_komoditas_panen, String tipe_komoditas_panen, int harga_jual_perkilo, String tanggal_panen, String petani) {
+        this.id_hasilpanen = id_hasilpanen;
+        this.id_akun = id_akun;
+        this.berat_komoditas_panen = berat_komoditas_panen;
+        this.nama_komoditas_panen = nama_komoditas_panen;
+        this.tipe_komoditas_panen = tipe_komoditas_panen;
+        this.harga_jual_perkilo = harga_jual_perkilo;
+        this.tanggal_panen = tanggal_panen;
+        this.petani = petani;
+    }
+    
     public DataPanen(){
         
     }
+
+    public String getPetani() {
+        return petani;
+    }
+
+    public void setPetani(String petani) {
+        this.petani = petani;
+    }
+    
+    
 
     public void setId_hasilpanen(int id_hasilpanen) {
         this.id_hasilpanen = id_hasilpanen;

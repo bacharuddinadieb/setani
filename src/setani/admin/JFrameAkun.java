@@ -9,6 +9,7 @@ import com.mysql.jdbc.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import setani.generic.DataAkun;
 import setani.koneksi.koneksi;
 
 /**
@@ -21,13 +22,30 @@ public class JFrameAkun extends javax.swing.JFrame {
      * Creates new form JFrameTambahHasilPanen
      */
     private Connection conn;
-    public JFrameAkun() {
+    DataAkun dataAkun;
+    MainDashboardAdmin mda;
+
+    public JFrameAkun(MainDashboardAdmin admin) {
         initComponents();
         conn = koneksi.bukaKoneksi();
         rbPetani.setActionCommand("Petani");
         rbPembeli.setActionCommand("Pembeli");
+        mda = admin;
     }
     
+    public JFrameAkun(DataAkun da) {
+        initComponents();
+        conn = koneksi.bukaKoneksi();
+        rbPetani.setActionCommand("Petani");
+        rbPembeli.setActionCommand("Pembeli");
+        dataAkun = da;
+        tfNama.setText(da.getNama());
+        tfUsername.setText(da.getUsername());
+//        tfpassword.setText(t);
+    }
+    
+    
+
     private void tambahData(String username, String password, String nama, String nomerTelepon, String alamat, int role) {
         if (conn != null) {
             try {
@@ -43,6 +61,31 @@ public class JFrameAkun extends javax.swing.JFrame {
                 int hasil = ps.executeUpdate();
                 if (hasil > 0) {
                     JOptionPane.showMessageDialog(this, "Input Berhasil");
+                    setVisible(false);
+                    dispose();
+                }
+            } catch (SQLException e) {
+                System.err.println(e);
+            }
+        }
+    }
+    
+    private void updateData(String username, String password, String nama, String nomerTelepon, String alamat, int role, int idAkun) {
+        if (conn != null) {
+            try {
+                String kueri = "UPDATE tb_akun SET username = ?, password = ?, nama = ?, nomer_telepon = ?, alamat = ?, role = ?, status = ? WHERE id_akun = ?";
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, username);
+                ps.setString(2, password);
+                ps.setString(3, nama);
+                ps.setString(4, nomerTelepon);
+                ps.setString(5, alamat);
+                ps.setInt(6, role);
+                ps.setInt(7, 1);
+                ps.setInt(8, idAkun);
+                int hasil = ps.executeUpdate();
+                if (hasil > 0) {
+                    JOptionPane.showMessageDialog(this, "Berhasil Update Data");
                     setVisible(false);
                     dispose();
                 }
@@ -261,6 +304,18 @@ public class JFrameAkun extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         System.out.println(tipeAkun.getSelection().getActionCommand());
+        int role = 0;
+        if (tipeAkun.getSelection().getActionCommand().equals("Petani")) {
+            role = 2;
+        } else {
+            role = 3;
+        }
+
+        if (tfpassword.getText().equals(tfKonfPassword.getText())) {
+            tambahData(tfUsername.getText(), tfpassword.getText(), tfNama.getText(), tfNomerTelepon.getText(), taAlamat.getText(), role);
+            mda.loadDataAkun();
+            mda.tampilDataAkun();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

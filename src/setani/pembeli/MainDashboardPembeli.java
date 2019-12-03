@@ -37,6 +37,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
      */
     private final CardLayout cardLayout;
     DataAkun informasilogin;
+    private int indexCard = 0;
     private DefaultTableModel modelHasilPanen = new DefaultTableModel();
     private DefaultTableModel modelTransaksiHasilPanen = new DefaultTableModel();
     private DefaultTableModel modelTransaksiHistory = new DefaultTableModel();
@@ -68,11 +69,13 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         modelHasilPanen.addColumn("Tipe Komoditas Panen");
         modelHasilPanen.addColumn("Berat Komoditas Panen");
         modelHasilPanen.addColumn("Harga Jual/Kg");
+        modelHasilPanen.addColumn("Petani");
         modelHasilPanen.addColumn("Tanggal Panen");
         modelTransaksiHasilPanen.addColumn("Nama Komoditas Panen");
         modelTransaksiHasilPanen.addColumn("Tipe Komoditas Panen");
         modelTransaksiHasilPanen.addColumn("Berat Komoditas Panen");
         modelTransaksiHasilPanen.addColumn("Harga Jual/Kg");
+        modelTransaksiHasilPanen.addColumn("Petani");
         modelTransaksiHasilPanen.addColumn("Tanggal Panen");
         modelTransaksiHistory.addColumn("Id Transaksi");
         modelTransaksiHistory.addColumn("Tanggal Transaksi");
@@ -83,7 +86,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private void loadpanen() {
         if (conn != null) {
             daftarpanen.clear();
-            String kueri = "SELECT * FROM tb_hasil_panen";
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen INNER JOIN tb_akun ON tb_akun.id_akun = tb_hasil_panen.id_akun";
             try {
                 PreparedStatement ps = conn.prepareStatement(kueri);
                 ResultSet rs = ps.executeQuery();
@@ -95,7 +98,37 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                     int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
                     int harga_jual_perkilo = rs.getInt("harga_jual_kg");
                     String tanggal_panen = rs.getString("tanggal_panen");
-                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                    String petani = rs.getString("nama");
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen, petani);
+                    daftarpanen.add(data);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void loadpanenCari(String Komoditas) {
+        if (conn != null) {
+            daftarpanen.clear();
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen INNER JOIN tb_akun ON tb_akun.id_akun = tb_hasil_panen.id_akun WHERE nama_komoditas_panen LIKE ? OR tipe_komoditas_panen LIKE ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + Komoditas + "%");
+                ps.setString(2, "%" + Komoditas + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int id_hasilpanen = rs.getInt("id_hasil_panen");
+                    int id_akun = rs.getInt("id_akun");
+                    String nama_komoditas_panen = rs.getString("nama_komoditas_panen");
+                    String tipe_komoditas_panen = rs.getString("tipe_komoditas_panen");
+                    int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
+                    int harga_jual_perkilo = rs.getInt("harga_jual_kg");
+                    String tanggal_panen = rs.getString("tanggal_panen");
+                    String petani = rs.getString("nama");
+                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen, petani);
                     daftarpanen.add(data);
                 }
                 rs.close();
@@ -129,6 +162,32 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         }
     }
 
+    private void loadTransaksiHistoryCari(String transaksi) {
+        if (conn != null) {
+            daftarTransaksi.clear();
+            String kueri = "SELECT * FROM tb_transaksi INNER JOIN tb_akun ON tb_akun.id_akun = tb_transaksi.id_pembeli WHERE tb_transaksi.id_transaksi LIKE ? OR tb_transaksi.tanggal_transaksi LIKE ? OR nama LIKE ?";
+            try {
+                PreparedStatement ps = conn.prepareStatement(kueri);
+                ps.setString(1, "%" + transaksi + "%");
+                ps.setString(2, "%" + transaksi + "%");
+                ps.setString(3, "%" + transaksi + "%");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    int idTransaksi = rs.getInt("id_transaksi");
+                    String tanggalTransaksi = rs.getString("tanggal_transaksi");
+                    int idPembeli = rs.getInt("id_pembeli");
+                    String namaPembeli = rs.getString("nama");
+                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli);
+                    daftarTransaksi.add(dataTransaksi);
+                }
+                rs.close();
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(MainDashboardPembeli.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     void tampilDataPanen() {
         modelHasilPanen.setRowCount(0);
         for (DataPanen b : daftarpanen) {
@@ -137,6 +196,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 b.getTipe_komoditas_panen(),
                 b.getBerat_komoditas_panen(),
                 b.getHarga_jual_perkilo(),
+                b.getPetani(),
                 b.getTanggal_panen()
 
             });
@@ -151,12 +211,13 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 b.getTipe_komoditas_panen(),
                 b.getBerat_komoditas_panen(),
                 b.getHarga_jual_perkilo(),
+                b.getPetani(),
                 b.getTanggal_panen()
 
             });
         }
     }
-    
+
     void tampilDataTransaksiHistory() {
         modelTransaksiHistory.setRowCount(0);
         for (DataTransaksi b : daftarTransaksi) {
@@ -550,6 +611,12 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(48, 63, 159));
         jPanel2.setMinimumSize(new java.awt.Dimension(290, 42));
+
+        tfCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfCariKeyReleased(evt);
+            }
+        });
 
         lblIconCariAtas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_search_20px.png"))); // NOI18N
 
@@ -1100,6 +1167,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         tampilDataPanen();
         gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
         cardLayout.show(panCard, "panCardHasilPanen");
+        indexCard = 1;
     }//GEN-LAST:event_sideBtnHasilPanenMouseClicked
 
     private void sideBtnTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnTransaksiMouseClicked
@@ -1107,11 +1175,13 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         tampilDataTransaksiHistory();
         gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
         cardLayout.show(panCard, "panCardTransaksi");
+        indexCard = 2;
     }//GEN-LAST:event_sideBtnTransaksiMouseClicked
 
     private void sideBtnPengaturanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnPengaturanMouseClicked
         gantiWarnaSidePanel(sideBtnPengaturan, panIndikatorPengaturan);
         cardLayout.show(panCard, "panCardPengaturan");
+        indexCard = 0;
     }//GEN-LAST:event_sideBtnPengaturanMouseClicked
 
     private void sideBtnKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnKeluarMouseClicked
@@ -1125,6 +1195,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private void sideBtnBerandaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnBerandaMouseClicked
         gantiWarnaSidePanel(sideBtnBeranda, panIndikatorBeranda);
         cardLayout.show(panCard, "panCardBeranda");
+        indexCard = 0;
     }//GEN-LAST:event_sideBtnBerandaMouseClicked
 
     private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
@@ -1133,6 +1204,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         tampilDataPanen();
         gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
         cardLayout.show(panCard, "panCardHasilPanen");
+        indexCard = 1;
     }//GEN-LAST:event_jPanel4MouseClicked
 
     private void jPanel16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel16MouseClicked
@@ -1141,6 +1213,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         tampilDataTransaksiHistory();
         gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
         cardLayout.show(panCard, "panCardTransaksi");
+        indexCard = 2;
     }//GEN-LAST:event_jPanel16MouseClicked
 
     private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
@@ -1149,6 +1222,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         tampilDataPanen();
         gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
         cardLayout.show(panCard, "panCardHasilPanen");
+        indexCard = 1;
     }//GEN-LAST:event_jPanel5MouseClicked
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
@@ -1157,6 +1231,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         tampilDataTransaksiHistory();
         gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
         cardLayout.show(panCard, "panCardTransaksi");
+        indexCard = 2;
     }//GEN-LAST:event_jPanel6MouseClicked
 
     private void btnBeliHasilPanenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBeliHasilPanenActionPerformed
@@ -1181,7 +1256,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                     int hasil = ps.executeUpdate();
                     if (hasil > 0) {
                         int idTransaksi = 0;
-                        JOptionPane.showMessageDialog(this, "Input Berhasil");
+                        JOptionPane.showMessageDialog(this, "Berhasil Memproses Pembelian");
                         ResultSet rs = ps.getGeneratedKeys();
                         if (rs.next()) {
                             idTransaksi = rs.getInt(1);
@@ -1214,13 +1289,13 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                         }
                         System.out.println(idTransaksi);
                         daftarPanenMauDiBeli.clear();
-                        
+
                     }
 
                     tampilDataPanen();
                     tampilDataPanen2();
                 } catch (SQLException ex) {
-                    java.util.logging.Logger.getLogger(JFrameHasilPanen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+                    System.err.println(ex);
                 }
             }
         } else {
@@ -1245,7 +1320,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             tampilDataPanen2();
             tampilDataPanen();
         }
-        
+
     }//GEN-LAST:event_btnHapusHasilPanenBeliActionPerformed
 
     private void jTabelHistoryTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabelHistoryTransaksiMouseClicked
@@ -1254,6 +1329,29 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         DetailTransaksi dt = new DetailTransaksi(daftarTransaksi.get(baris));
         dt.setVisible(true);
     }//GEN-LAST:event_jTabelHistoryTransaksiMouseClicked
+
+    private void tfCariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfCariKeyReleased
+        // TODO add your handling code here:
+        String keyword = tfCari.getText();
+        System.out.println(keyword);
+        if (indexCard == 1) {
+            if (keyword.length() == 0) {
+                loadpanen();
+                tampilDataPanen();
+            } else {
+                loadpanenCari(keyword);
+                tampilDataPanen();
+            }
+        } else if (indexCard == 2) {
+            if (keyword.length() == 0) {
+                loadTransaksiHistory();
+                tampilDataTransaksiHistory();
+            } else {
+                loadTransaksiHistoryCari(keyword);
+                tampilDataTransaksiHistory();
+            }
+        }
+    }//GEN-LAST:event_tfCariKeyReleased
 
     /**
      * @param args the command line arguments
