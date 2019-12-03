@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 import javax.swing.table.DefaultTableModel;
 import setani.koneksi.koneksi;
@@ -33,16 +34,17 @@ public class MainDashboardPetani extends javax.swing.JFrame {
      */
     private final CardLayout cardLayout;
     DataAkun informasilogin;
+    int cardIndex = 0;
 
     public MainDashboardPetani(DataAkun login) {
         initComponents();
+        informasilogin = login;
         cardLayout = (CardLayout) (panCard.getLayout());
         conn = koneksi.bukaKoneksi();
         jtHasilPanen.setModel(model);
         loadkolom();
         loadpanen();
         tampilDataPanen();
-        informasilogin = login;
     }
 
     private DefaultTableModel model = new DefaultTableModel();
@@ -60,7 +62,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
     void loadpanen() {
         if (conn != null) {
             daftarpanen.clear();
-            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen";
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen WHERE tb_hasil_panen.id_akun = '" + informasilogin.getIdAkun() + "'";
             try {
                 PreparedStatement ps = conn.prepareStatement(kueri);
                 ResultSet rs = ps.executeQuery();
@@ -86,11 +88,12 @@ public class MainDashboardPetani extends javax.swing.JFrame {
     void loadpanenCari(String keyword) {
         if (conn != null) {
             daftarpanen.clear();
-            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen WHERE nama_komoditas_panen LIKE ? OR tipe_komoditas_panen LIKE ?";
+            String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen WHERE tb_hasil_panen.id_akun = ? AND nama_komoditas_panen LIKE ? OR tipe_komoditas_panen LIKE ?";
             try {
                 PreparedStatement ps = conn.prepareStatement(kueri);
-                ps.setString(1, "%" + keyword + "%");
+                ps.setInt(1, informasilogin.getIdAkun());
                 ps.setString(2, "%" + keyword + "%");
+                ps.setString(3, "%" + keyword + "%");
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
                     int id_hasilpanen = rs.getInt("id_hasil_panen");
@@ -100,8 +103,11 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                     int berat_komoditas_panen = rs.getInt("berat_komoditas_panen");
                     int harga_jual_perkilo = rs.getInt("harga_jual_kg");
                     String tanggal_panen = rs.getString("tanggal_panen");
-                    DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
-                    daftarpanen.add(data);
+
+                    if (informasilogin.getIdAkun() == id_akun) {
+                        DataPanen data = new DataPanen(id_hasilpanen, id_akun, berat_komoditas_panen, nama_komoditas_panen, tipe_komoditas_panen, harga_jual_perkilo, tanggal_panen);
+                        daftarpanen.add(data);
+                    }
                 }
                 rs.close();
                 ps.close();
@@ -229,6 +235,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
         jPanel9 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         btnTambahHasilPanen = new javax.swing.JButton();
+        btnTambahHasilPanen2 = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jtHasilPanen = new javax.swing.JTable();
         panCardTransaksi = new javax.swing.JPanel();
@@ -511,6 +518,12 @@ public class MainDashboardPetani extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(48, 63, 159));
         jPanel2.setMinimumSize(new java.awt.Dimension(290, 42));
+
+        tfCari.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfCariKeyReleased(evt);
+            }
+        });
 
         lblIconCariAtas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_search_20px.png"))); // NOI18N
 
@@ -887,6 +900,17 @@ public class MainDashboardPetani extends javax.swing.JFrame {
             }
         });
 
+        btnTambahHasilPanen2.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen2.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen2.setText("Edit");
+        btnTambahHasilPanen2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanen2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -894,18 +918,23 @@ public class MainDashboardPetani extends javax.swing.JFrame {
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jLabel22)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 500, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 433, Short.MAX_VALUE)
+                .addComponent(btnTambahHasilPanen2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnTambahHasilPanen)
-                .addGap(30, 30, 30))
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel22)
-                    .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel22)
                 .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTambahHasilPanen2)))
         );
 
         jtHasilPanen.setModel(new javax.swing.table.DefaultTableModel(
@@ -1093,11 +1122,13 @@ public class MainDashboardPetani extends javax.swing.JFrame {
     private void sideBtnHasilPanenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnHasilPanenMouseClicked
         gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
         cardLayout.show(panCard, "panCardHasilPanen");
+        cardIndex = 1;
     }//GEN-LAST:event_sideBtnHasilPanenMouseClicked
 
     private void sideBtnTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnTransaksiMouseClicked
         gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
         cardLayout.show(panCard, "panCardTransaksi");
+        cardIndex = 2;
     }//GEN-LAST:event_sideBtnTransaksiMouseClicked
 
     private void sideBtnPengaturanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnPengaturanMouseClicked
@@ -1112,6 +1143,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
     private void sideBtnBerandaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnBerandaMouseClicked
         gantiWarnaSidePanel(sideBtnBeranda, panIndikatorBeranda);
         cardLayout.show(panCard, "panCardBeranda");
+        cardIndex = 0;
     }//GEN-LAST:event_sideBtnBerandaMouseClicked
 
     private void btnTambahHasilPanenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanenActionPerformed
@@ -1120,6 +1152,29 @@ public class MainDashboardPetani extends javax.swing.JFrame {
         jFrameHasilPanen.setLocationRelativeTo(null);
         jFrameHasilPanen.setVisible(true);
     }//GEN-LAST:event_btnTambahHasilPanenActionPerformed
+
+    private void tfCariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfCariKeyReleased
+        // TODO add your handling code here:
+        String keyword = tfCari.getText();
+        if (cardIndex == 1) {
+            loadpanenCari(keyword);
+            tampilDataPanen();
+        } else if (cardIndex == 2) {
+
+        }
+    }//GEN-LAST:event_tfCariKeyReleased
+
+    private void btnTambahHasilPanen2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanen2ActionPerformed
+        // TODO add your handling code here:
+        int baris = jtHasilPanen.getSelectedRow();
+        if (baris >= 0) {
+            JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen(this, informasilogin, daftarpanen.get(baris));
+            jFrameHasilPanen.setLocationRelativeTo(null);
+            jFrameHasilPanen.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Silahkan pilih Daftar Hasil Panen", "Pesan", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnTambahHasilPanen2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1162,6 +1217,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnTambahHasilPanen;
+    private javax.swing.JButton btnTambahHasilPanen2;
     private javax.swing.JButton jButton11;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
