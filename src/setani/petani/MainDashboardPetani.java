@@ -261,6 +261,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
         jPanel9 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         btnTambahHasilPanen = new javax.swing.JButton();
+        btnTambahHasilPanen1 = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         jtHasilPanen = new javax.swing.JTable();
         panCardTransaksi = new javax.swing.JPanel();
@@ -681,6 +682,17 @@ public class MainDashboardPetani extends javax.swing.JFrame {
             }
         });
 
+        btnTambahHasilPanen1.setBackground(new java.awt.Color(1, 87, 155));
+        btnTambahHasilPanen1.setForeground(new java.awt.Color(246, 246, 246));
+        btnTambahHasilPanen1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_add_24px.png"))); // NOI18N
+        btnTambahHasilPanen1.setText("Edit");
+        btnTambahHasilPanen1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnTambahHasilPanen1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTambahHasilPanen1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -689,6 +701,8 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel22)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnTambahHasilPanen1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnTambahHasilPanen)
                 .addContainerGap())
         );
@@ -700,7 +714,9 @@ public class MainDashboardPetani extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTambahHasilPanen, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTambahHasilPanen1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         jtHasilPanen.setModel(new javax.swing.table.DefaultTableModel(
@@ -948,6 +964,13 @@ public class MainDashboardPetani extends javax.swing.JFrame {
 //        indexCard = 2;
     }//GEN-LAST:event_jPanel13MouseClicked
 
+    private void btnTambahHasilPanen1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTambahHasilPanen1ActionPerformed
+        // TODO add your handling code here:
+        JFrameHasilPanen jFrameHasilPanen = new JFrameHasilPanen(this, informasilogin, daftarpanen.get(jtHasilPanen.getSelectedRow()));
+        jFrameHasilPanen.setLocationRelativeTo(null);
+        jFrameHasilPanen.setVisible(true);
+    }//GEN-LAST:event_btnTambahHasilPanen1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -989,6 +1012,7 @@ public class MainDashboardPetani extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnTambahHasilPanen;
+    private javax.swing.JButton btnTambahHasilPanen1;
     private javax.swing.JButton jButton11;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel14;
