@@ -111,11 +111,9 @@ public class JFrameAkun extends javax.swing.JFrame {
         tfNama = new javax.swing.JTextField();
         tfUsername = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        tfpassword = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        tfKonfPassword = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         tfNomerTelepon = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -125,6 +123,8 @@ public class JFrameAkun extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         rbPetani = new javax.swing.JRadioButton();
         rbPembeli = new javax.swing.JRadioButton();
+        tfpassword = new javax.swing.JPasswordField();
+        tfKonfPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -149,8 +149,6 @@ public class JFrameAkun extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setText("Username");
 
-        tfpassword.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
-
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setText("Password");
 
@@ -173,8 +171,6 @@ public class JFrameAkun extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
-
-        tfKonfPassword.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel5.setText("Konfirmasi Password");
@@ -200,6 +196,10 @@ public class JFrameAkun extends javax.swing.JFrame {
         tipeAkun.add(rbPembeli);
         rbPembeli.setText("Pembeli");
 
+        tfpassword.setText("jPasswordField1");
+
+        tfKonfPassword.setText("jPasswordField1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -214,11 +214,11 @@ public class JFrameAkun extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tfKonfPassword, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tfpassword, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tfNama, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
                             .addComponent(tfUsername, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tfpassword, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(tfKonfPassword, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(tfNomerTelepon, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -253,11 +253,11 @@ public class JFrameAkun extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tfpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfKonfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tfKonfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -372,11 +372,11 @@ public class JFrameAkun extends javax.swing.JFrame {
     private javax.swing.JRadioButton rbPembeli;
     private javax.swing.JRadioButton rbPetani;
     private javax.swing.JTextArea taAlamat;
-    private javax.swing.JTextField tfKonfPassword;
+    private javax.swing.JPasswordField tfKonfPassword;
     private javax.swing.JTextField tfNama;
     private javax.swing.JTextField tfNomerTelepon;
     private javax.swing.JTextField tfUsername;
-    private javax.swing.JTextField tfpassword;
+    private javax.swing.JPasswordField tfpassword;
     private javax.swing.ButtonGroup tipeAkun;
     // End of variables declaration//GEN-END:variables
 }

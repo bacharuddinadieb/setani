@@ -10,7 +10,8 @@ package setani.generic;
  * @author matohdev
  */
 public class DataTransaksi {
-    int idTransaksi, idPembeli;
+
+    int idTransaksi, idPembeli, status;
     String tanggalTransaksi, namaPembeli;
 
     public DataTransaksi(int idTransaksi, int idPembeli, String tanggalTransaksi) {
@@ -18,12 +19,21 @@ public class DataTransaksi {
         this.idPembeli = idPembeli;
         this.tanggalTransaksi = tanggalTransaksi;
     }
-    
-    public DataTransaksi(int idTransaksi, int idPembeli, String tanggalTransaksi, String namaPembeli) {
+
+    public DataTransaksi(int idTransaksi, int idPembeli, String tanggalTransaksi, String namaPembeli, int status) {
         this.idTransaksi = idTransaksi;
         this.idPembeli = idPembeli;
         this.tanggalTransaksi = tanggalTransaksi;
         this.namaPembeli = namaPembeli;
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getNamaPembeli() {
@@ -33,8 +43,6 @@ public class DataTransaksi {
     public void setNamaPembeli(String namaPembeli) {
         this.namaPembeli = namaPembeli;
     }
-    
-    
 
     public int getIdTransaksi() {
         return idTransaksi;
@@ -55,6 +63,5 @@ public class DataTransaksi {
     public void setTanggalTransaksi(String tanggalTransaksi) {
         this.tanggalTransaksi = tanggalTransaksi;
     }
-    
-    
+
 }

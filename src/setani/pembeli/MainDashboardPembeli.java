@@ -47,6 +47,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     ArrayList<DataPanen> daftarPanenMauDiBeli = new ArrayList<>();
     ArrayList<DataTransaksi> daftarTransaksi = new ArrayList<>();
 
+    int statusFilterTransaksi = 0;
+
     public MainDashboardPembeli(DataAkun login) {
         initComponents();
         cardLayout = (CardLayout) (panCard.getLayout());
@@ -62,6 +64,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         informasilogin = login;
         jLabelWelcomeHomeName.setText("Selamat datang, " + informasilogin.getNama());
         jLabelTotalHasilPanen.setText(Integer.toString(daftarpanen.size()) + " Komoditas Panen");
+        jrbProses.setSelected(true);
     }
 
     private void loadkolom() {
@@ -80,6 +83,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         modelTransaksiHistory.addColumn("Id Transaksi");
         modelTransaksiHistory.addColumn("Tanggal Transaksi");
         modelTransaksiHistory.addColumn("Pembeli");
+        modelTransaksiHistory.addColumn("Status");
 
     }
 
@@ -151,7 +155,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                     String tanggalTransaksi = rs.getString("tanggal_transaksi");
                     int idPembeli = rs.getInt("id_pembeli");
                     String namaPembeli = rs.getString("nama");
-                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli);
+                    int status = rs.getInt("status");
+                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli, status);
                     daftarTransaksi.add(dataTransaksi);
                 }
                 rs.close();
@@ -177,7 +182,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                     String tanggalTransaksi = rs.getString("tanggal_transaksi");
                     int idPembeli = rs.getInt("id_pembeli");
                     String namaPembeli = rs.getString("nama");
-                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli);
+                    int status = rs.getInt("status");
+                    DataTransaksi dataTransaksi = new DataTransaksi(idTransaksi, idPembeli, tanggalTransaksi, namaPembeli, status);
                     daftarTransaksi.add(dataTransaksi);
                 }
                 rs.close();
@@ -221,11 +227,28 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     void tampilDataTransaksiHistory() {
         modelTransaksiHistory.setRowCount(0);
         for (DataTransaksi b : daftarTransaksi) {
-            modelTransaksiHistory.addRow(new Object[]{
-                b.getIdTransaksi(),
-                b.getTanggalTransaksi(),
-                b.getNamaPembeli()
-            });
+            String status = "Belum Terproses";
+            if (statusFilterTransaksi == 1) {
+                status = "Terproses";
+                if (b.getStatus() == 1) {
+                    modelTransaksiHistory.addRow(new Object[]{
+                        b.getIdTransaksi(),
+                        b.getTanggalTransaksi(),
+                        b.getNamaPembeli(),
+                        status
+                    });
+                }
+            } else {
+                if (b.getStatus() == 0) {
+                    modelTransaksiHistory.addRow(new Object[]{
+                        b.getIdTransaksi(),
+                        b.getTanggalTransaksi(),
+                        b.getNamaPembeli(),
+                        status
+                    });
+                }
+            }
+
         }
     }
 
@@ -233,8 +256,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
 //        jTabelBarangLaku.setModel(modelTransaksiHasilPanen);
 //    }
     private void gantiWarnaSidePanel(JPanel jPanel, JPanel panelIndikator) {
-        JPanel[] sideButtonElem = {sideBtnBeranda, sideBtnHasilPanen, sideBtnTransaksi, sideBtnPengaturan};
-        JPanel[] sideButtonIndikator = {panIndikatorBeranda, panIndikatorHasilPanen, panIndikatorTransaksi, panIndikatorPengaturan};
+        JPanel[] sideButtonElem = {sideBtnBeranda, sideBtnHasilPanen, sideBtnTransaksi};
+        JPanel[] sideButtonIndikator = {panIndikatorBeranda, panIndikatorHasilPanen, panIndikatorTransaksi};
         // untuk menambahkan warna pada sideButton yang dipilih
         jPanel.setBackground(new Color(53, 53, 106));
         panelIndikator.setOpaque(true);
@@ -270,6 +293,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         sideBtnHasilPanen = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -283,10 +307,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jPanel12 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        sideBtnPengaturan = new javax.swing.JPanel();
-        jLabel10 = new javax.swing.JLabel();
-        panIndikatorPengaturan = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
         sideBtnBeranda = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         panIndikatorBeranda = new javax.swing.JPanel();
@@ -308,17 +328,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         jLabel31 = new javax.swing.JLabel();
         jLabel32 = new javax.swing.JLabel();
         jLabelTotalTransaksiBeli = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jLabel18 = new javax.swing.JLabel();
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
-        jLabel27 = new javax.swing.JLabel();
-        jPanel16 = new javax.swing.JPanel();
-        jLabel40 = new javax.swing.JLabel();
-        jLabel41 = new javax.swing.JLabel();
-        jLabel42 = new javax.swing.JLabel();
-        jLabel43 = new javax.swing.JLabel();
         panCardHasilPanen = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
@@ -336,6 +345,9 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jScrollPane10 = new javax.swing.JScrollPane();
         jTabelHistoryTransaksi = new javax.swing.JTable();
+        jLabel56 = new javax.swing.JLabel();
+        jrbProses = new javax.swing.JRadioButton();
+        jrbSelesai = new javax.swing.JRadioButton();
         panCardPengaturan = new javax.swing.JPanel();
         jPanel14 = new javax.swing.JPanel();
         jLabel26 = new javax.swing.JLabel();
@@ -489,56 +501,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        sideBtnPengaturan.setBackground(new java.awt.Color(27, 27, 57));
-        sideBtnPengaturan.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        sideBtnPengaturan.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                sideBtnPengaturanMouseClicked(evt);
-            }
-        });
-
-        jLabel10.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(254, 254, 254));
-        jLabel10.setText("Pengaturan");
-
-        panIndikatorPengaturan.setOpaque(false);
-
-        javax.swing.GroupLayout panIndikatorPengaturanLayout = new javax.swing.GroupLayout(panIndikatorPengaturan);
-        panIndikatorPengaturan.setLayout(panIndikatorPengaturanLayout);
-        panIndikatorPengaturanLayout.setHorizontalGroup(
-            panIndikatorPengaturanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 8, Short.MAX_VALUE)
-        );
-        panIndikatorPengaturanLayout.setVerticalGroup(
-            panIndikatorPengaturanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_settings_24px.png"))); // NOI18N
-
-        javax.swing.GroupLayout sideBtnPengaturanLayout = new javax.swing.GroupLayout(sideBtnPengaturan);
-        sideBtnPengaturan.setLayout(sideBtnPengaturanLayout);
-        sideBtnPengaturanLayout.setHorizontalGroup(
-            sideBtnPengaturanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sideBtnPengaturanLayout.createSequentialGroup()
-                .addComponent(panIndikatorPengaturan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel11)
-                .addContainerGap())
-        );
-        sideBtnPengaturanLayout.setVerticalGroup(
-            sideBtnPengaturanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sideBtnPengaturanLayout.createSequentialGroup()
-                .addGroup(sideBtnPengaturanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(panIndikatorPengaturan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(sideBtnPengaturanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
         sideBtnBeranda.setBackground(new java.awt.Color(53, 53, 106));
         sideBtnBeranda.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         sideBtnBeranda.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -591,7 +553,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addComponent(sideBtnHasilPanen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(sideBtnTransaksi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(sideBtnKeluar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(sideBtnPengaturan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(sideBtnBeranda, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
@@ -604,8 +565,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sideBtnTransaksi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(sideBtnPengaturan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sideBtnKeluar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -763,97 +722,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
 
         jPanel3.add(jPanel6);
 
-        jLabel17.setFont(new java.awt.Font("Ubuntu", 0, 22)); // NOI18N
-        jLabel17.setText("Aktifitas Terakhir");
-
-        jPanel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel4MouseClicked(evt);
-            }
-        });
-
-        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_chevron_right_48px_2.png"))); // NOI18N
-
-        jLabel19.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
-        jLabel19.setText("Hasil Panen");
-
-        jLabel20.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel20.setText("Fulan bin Fulan, ada hasil panen baru berupa JAGUNG dengan Berat 100Kg");
-
-        jLabel27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/hasil_panenx40.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel27)
-                .addGap(30, 30, 30)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel19)
-                    .addComponent(jLabel20))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel18)
-                .addGap(28, 28, 28))
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel19)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel20)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        jPanel16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jPanel16.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel16MouseClicked(evt);
-            }
-        });
-
-        jLabel40.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/icons8_chevron_right_48px_2.png"))); // NOI18N
-
-        jLabel41.setFont(new java.awt.Font("Ubuntu", 0, 20)); // NOI18N
-        jLabel41.setText("Transaksi");
-
-        jLabel42.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel42.setText("Fulan bin Fulan, ada pembeli baru memborong jJAGUNG 1 TON");
-
-        jLabel43.setIcon(new javax.swing.ImageIcon(getClass().getResource("/setani/gambar/transaksix40.png"))); // NOI18N
-
-        javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
-        jPanel16.setLayout(jPanel16Layout);
-        jPanel16Layout.setHorizontalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jLabel43)
-                .addGap(30, 30, 30)
-                .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel41)
-                    .addComponent(jLabel42))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel40)
-                .addGap(28, 28, 28))
-        );
-        jPanel16Layout.setVerticalGroup(
-            jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel40, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel16Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel41)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel42)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jLabel43, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
         javax.swing.GroupLayout panCardBerandaLayout = new javax.swing.GroupLayout(panCardBeranda);
         panCardBeranda.setLayout(panCardBerandaLayout);
         panCardBerandaLayout.setHorizontalGroup(
@@ -861,16 +729,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(panCardBerandaLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(panCardBerandaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panCardBerandaLayout.createSequentialGroup()
-                        .addComponent(jLabel17)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCardBerandaLayout.createSequentialGroup()
-                        .addGroup(panCardBerandaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jPanel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE))
-                        .addGap(27, 27, 27))))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 880, Short.MAX_VALUE)
+                .addGap(27, 27, 27))
         );
         panCardBerandaLayout.setVerticalGroup(
             panCardBerandaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -878,13 +738,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
-                .addComponent(jLabel17)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addContainerGap(340, Short.MAX_VALUE))
         );
 
         panCard.add(panCardBeranda, "panCardBeranda");
@@ -998,7 +852,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 .addComponent(jScrollPane13, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnProsesPembelia, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panCardHasilPanenLayout = new javax.swing.GroupLayout(panCardHasilPanen);
@@ -1040,6 +894,25 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         });
         jScrollPane10.setViewportView(jTabelHistoryTransaksi);
 
+        jLabel56.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel56.setText("Filter Status");
+
+        buttonGroup1.add(jrbProses);
+        jrbProses.setText("Proses");
+        jrbProses.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jrbProsesMouseClicked(evt);
+            }
+        });
+
+        buttonGroup1.add(jrbSelesai);
+        jrbSelesai.setText("Selesai");
+        jrbSelesai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jrbSelesaiMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout panCardTransaksiLayout = new javax.swing.GroupLayout(panCardTransaksi);
         panCardTransaksi.setLayout(panCardTransaksiLayout);
         panCardTransaksiLayout.setHorizontalGroup(
@@ -1050,10 +923,17 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                     .addGroup(panCardTransaksiLayout.createSequentialGroup()
                         .addComponent(jLabel16)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panCardTransaksiLayout.createSequentialGroup()
-                        .addGroup(panCardTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCardTransaksiLayout.createSequentialGroup()
+                        .addGroup(panCardTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(panCardTransaksiLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel56)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jrbProses)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jrbSelesai))
+                            .addComponent(jScrollPane10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panCardTransaksiLayout.createSequentialGroup()
                                 .addComponent(jLabel23)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGap(37, 37, 37))))
@@ -1065,9 +945,14 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 .addComponent(jLabel23)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel16)
-                .addGap(11, 11, 11)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panCardTransaksiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jrbSelesai)
+                    .addComponent(jrbProses)
+                    .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30))
         );
 
         panCard.add(panCardTransaksi, "panCardTransaksi");
@@ -1093,16 +978,17 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
                 .addComponent(jLabel26)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton11)
-                .addGap(30, 30, 30))
+                .addGap(29, 29, 29))
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel14Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel26)
-                    .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel26)
                 .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTable11.setModel(new javax.swing.table.DefaultTableModel(
@@ -1133,7 +1019,7 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             .addGroup(panCardPengaturanLayout.createSequentialGroup()
                 .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 434, Short.MAX_VALUE)
                 .addGap(30, 30, 30))
         );
 
@@ -1178,12 +1064,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         indexCard = 2;
     }//GEN-LAST:event_sideBtnTransaksiMouseClicked
 
-    private void sideBtnPengaturanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnPengaturanMouseClicked
-        gantiWarnaSidePanel(sideBtnPengaturan, panIndikatorPengaturan);
-        cardLayout.show(panCard, "panCardPengaturan");
-        indexCard = 0;
-    }//GEN-LAST:event_sideBtnPengaturanMouseClicked
-
     private void sideBtnKeluarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sideBtnKeluarMouseClicked
         dispose();
         Login1 login = new Login1();
@@ -1197,24 +1077,6 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
         cardLayout.show(panCard, "panCardBeranda");
         indexCard = 0;
     }//GEN-LAST:event_sideBtnBerandaMouseClicked
-
-    private void jPanel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel4MouseClicked
-        // TODO add your handling code here:
-        loadpanen();
-        tampilDataPanen();
-        gantiWarnaSidePanel(sideBtnHasilPanen, panIndikatorHasilPanen);
-        cardLayout.show(panCard, "panCardHasilPanen");
-        indexCard = 1;
-    }//GEN-LAST:event_jPanel4MouseClicked
-
-    private void jPanel16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel16MouseClicked
-        // TODO add your handling code here:
-        loadTransaksiHistory();
-        tampilDataTransaksiHistory();
-        gantiWarnaSidePanel(sideBtnTransaksi, panIndikatorTransaksi);
-        cardLayout.show(panCard, "panCardTransaksi");
-        indexCard = 2;
-    }//GEN-LAST:event_jPanel16MouseClicked
 
     private void jPanel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel5MouseClicked
         // TODO add your handling code here:
@@ -1326,8 +1188,15 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private void jTabelHistoryTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabelHistoryTransaksiMouseClicked
         // TODO add your handling code here:
         int baris = jTabelHistoryTransaksi.getSelectedRow();
-        DetailTransaksi dt = new DetailTransaksi(daftarTransaksi.get(baris));
-        dt.setVisible(true);
+        int idTransaksi = Integer.parseInt(jTabelHistoryTransaksi.getValueAt(baris, 0).toString());
+
+        for (int i = 0; i < daftarTransaksi.size(); i++) {
+            if (daftarTransaksi.get(i).getIdTransaksi() == idTransaksi) {
+                DetailTransaksi dt = new DetailTransaksi(daftarTransaksi.get(i));
+                dt.setVisible(true);
+            }
+
+        }
     }//GEN-LAST:event_jTabelHistoryTransaksiMouseClicked
 
     private void tfCariKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfCariKeyReleased
@@ -1352,6 +1221,20 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_tfCariKeyReleased
+
+    private void jrbProsesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jrbProsesMouseClicked
+        // TODO add your handling code here:
+        statusFilterTransaksi = 0;
+        loadTransaksiHistory();
+        tampilDataTransaksiHistory();
+    }//GEN-LAST:event_jrbProsesMouseClicked
+
+    private void jrbSelesaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jrbSelesaiMouseClicked
+        // TODO add your handling code here:
+        statusFilterTransaksi = 1;
+        loadTransaksiHistory();
+        tampilDataTransaksiHistory();
+    }//GEN-LAST:event_jrbSelesaiMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1402,35 +1285,26 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private javax.swing.JToggleButton btnBeliHasilPanen;
     private javax.swing.JToggleButton btnHapusHasilPanenBeli;
     private javax.swing.JToggleButton btnProsesPembelia;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton11;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel40;
-    private javax.swing.JLabel jLabel41;
-    private javax.swing.JLabel jLabel42;
-    private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel56;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLabel jLabelTotalHasilPanen;
@@ -1439,10 +1313,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel14;
-    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
@@ -1455,6 +1327,8 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private javax.swing.JTable jTabelHistoryTransaksi;
     private javax.swing.JTable jTable11;
     private javax.swing.JTable jTableTransaksi;
+    private javax.swing.JRadioButton jrbProses;
+    private javax.swing.JRadioButton jrbSelesai;
     private javax.swing.JLabel lblIconCariAtas;
     private javax.swing.JPanel panCard;
     private javax.swing.JPanel panCardBeranda;
@@ -1463,12 +1337,10 @@ public class MainDashboardPembeli extends javax.swing.JFrame {
     private javax.swing.JPanel panCardTransaksi;
     private javax.swing.JPanel panIndikatorBeranda;
     private javax.swing.JPanel panIndikatorHasilPanen;
-    private javax.swing.JPanel panIndikatorPengaturan;
     private javax.swing.JPanel panIndikatorTransaksi;
     private javax.swing.JPanel sideBtnBeranda;
     private javax.swing.JPanel sideBtnHasilPanen;
     private javax.swing.JPanel sideBtnKeluar;
-    private javax.swing.JPanel sideBtnPengaturan;
     private javax.swing.JPanel sideBtnTransaksi;
     private javax.swing.JTextField tfCari;
     // End of variables declaration//GEN-END:variables

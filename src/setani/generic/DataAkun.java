@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class DataAkun {
 //   public ArrayList<informasiLogin> arrDataLogin = new ArrayList<>();
    private int idAkun, role, status;
-   private String nama, username, alamat, nomerTelepon;
+   private String nama, username, alamat, nomerTelepon, password;
 
     public DataAkun(int idAkun, int role, int status, String nama, String username, String alamat, String nomerTelepon) {
         this.idAkun = idAkun;
@@ -25,10 +25,31 @@ public class DataAkun {
         this.alamat = alamat;
         this.nomerTelepon = nomerTelepon;
     }
+    
+    public DataAkun(int idAkun, int role, int status, String nama, String username, String alamat, String nomerTelepon, String password) {
+        this.idAkun = idAkun;
+        this.role = role;
+        this.status = status;
+        this.nama = nama;
+        this.username = username;
+        this.alamat = alamat;
+        this.nomerTelepon = nomerTelepon;
+        this.password = password;
+    }
 
     public DataAkun() {
         
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    
     
 
     public int getStatus() {

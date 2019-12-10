@@ -199,7 +199,7 @@ public class Login1 extends javax.swing.JFrame {
                 id_akun = r.getInt("id_akun");
                 status = r.getInt("status");
                 role = r.getInt("role");
-                il = new DataAkun(id_akun, role, status, nama, usercheck, alamat, nomerTelepon);
+                il = new DataAkun(id_akun, role, status, nama, usercheck, alamat, nomerTelepon, r.getString("password"));
                 System.out.println(il.getNama());
                 break;
             }

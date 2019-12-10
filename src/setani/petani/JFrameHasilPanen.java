@@ -280,7 +280,12 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println(comboTipeHasilPanen.getSelectedItem());
         int berat = Integer.parseInt(jTextField3.getText());
-        int harga = Integer.parseInt(jTextField4.getText());
+        if(berat<0){
+            JOptionPane.showMessageDialog(this, "Tidak Boleh Mines");
+            setVisible(false);
+            dispose();
+        }else{
+             int harga = Integer.parseInt(jTextField4.getText());
         String[] id = comboTipeHasilPanen.getSelectedItem().toString().split("-");
         if (jButton1.getText().equals("Tambah Data")) {
             tambahData(jTextField1.getText(), berat, harga, Integer.parseInt(id[0]), informasilogin.getIdAkun());
@@ -289,6 +294,8 @@ public class JFrameHasilPanen extends javax.swing.JFrame {
         }
         mainDashboardPetani.loadpanen();
         mainDashboardPetani.tampilDataPanen();
+        }
+       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

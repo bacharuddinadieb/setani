@@ -46,8 +46,6 @@ public class Transaksi extends javax.swing.JFrame {
         baris = barisKe;
     }
 
-    
-
     public void loadpanen() {
         if (conn != null) {
             String kueri = "SELECT * FROM tb_hasil_panen INNER JOIN tb_tipe_hasil_panen ON tb_tipe_hasil_panen.id_tipe_hasil_panen = tb_hasil_panen.id_tipe_hasil_panen INNER JOIN tb_akun ON tb_akun.id_akun = tb_hasil_panen.id_akun WHERE id_hasil_panen = '" + idHasilPanen + "'";
@@ -246,13 +244,17 @@ public class Transaksi extends javax.swing.JFrame {
     private void jBeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBeliActionPerformed
         // TODO add your handling code here:
         if (Integer.parseInt(jumlahkg.getText()) <= berat) {
-            loadpanen();
-            int totalBerat = mdp.daftarpanen.get(baris).getBerat_komoditas_panen() - Integer.parseInt(jumlahkg.getText());
-            mdp.tampilDataPanen2();
-            mdp.daftarpanen.get(baris).setBerat_komoditas_panen(totalBerat);
-            mdp.tampilDataPanen();
-            setVisible(false);
-            dispose();        
+            if (Integer.parseInt(jumlahkg.getText()) >= 0) {
+                loadpanen();
+                int totalBerat = mdp.daftarpanen.get(baris).getBerat_komoditas_panen() - Integer.parseInt(jumlahkg.getText());
+                mdp.tampilDataPanen2();
+                mdp.daftarpanen.get(baris).setBerat_komoditas_panen(totalBerat);
+                mdp.tampilDataPanen();
+                setVisible(false);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "Berat harus lebih dari 0", "Pesan", JOptionPane.ERROR_MESSAGE);
+            }
         } else {
             JOptionPane.showMessageDialog(null, "Stok komoditas hasil panen '" + namaKomoditas + "' tidak mencukupi, Silahkan pilih sesuai dengan beratnya!", "Pesan", JOptionPane.ERROR_MESSAGE);
         }
